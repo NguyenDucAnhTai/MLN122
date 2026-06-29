@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Đua xe Quiz - Chương 4</title>
+  <title>Đua xe chọn số - Chương 4</title>
   <style>
     * {
       box-sizing: border-box
@@ -35,9 +35,9 @@
     h1 {
       text-align: center;
       margin: 0;
-      font-size: clamp(25px, 4vw, 48px);
+      font-size: clamp(24px, 4vw, 47px);
       font-weight: 1000;
-      text-shadow: 0 3px 0 #ffffff88;
+      text-shadow: 0 3px 0 #ffffff88
     }
 
     .sub {
@@ -52,7 +52,7 @@
       margin: 14px auto 0;
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 12px;
+      gap: 12px
     }
 
     .team {
@@ -65,12 +65,12 @@
       justify-content: space-between;
       gap: 10px;
       border: 4px solid transparent;
-      transition: .2s;
+      transition: .2s
     }
 
     .team.active {
       transform: translateY(-4px) scale(1.02);
-      border-color: #ff4fc355
+      border-color: #ff4fc366
     }
 
     .name {
@@ -80,7 +80,7 @@
       min-width: 105px;
       text-align: center;
       font-size: clamp(16px, 2vw, 25px);
-      font-weight: 1000;
+      font-weight: 1000
     }
 
     .team:nth-child(1) .name {
@@ -126,7 +126,7 @@
       border: 4px solid #fff;
       border-radius: 30px;
       padding: 20px;
-      box-shadow: 0 18px 40px #0002;
+      box-shadow: 0 18px 40px #0002
     }
 
     .info {
@@ -156,10 +156,8 @@
       border-radius: 26px;
       overflow: hidden;
       padding: 16px 12px;
-      background:
-        linear-gradient(90deg, #e2e8f0 0 2px, transparent 2px 8px),
-        linear-gradient(180deg, #334155, #1e293b);
-      box-shadow: inset 0 0 0 5px #ffffff30, 0 10px 22px #0002;
+      background: linear-gradient(90deg, #e2e8f0 0 2px, transparent 2px 8px), linear-gradient(180deg, #334155, #1e293b);
+      box-shadow: inset 0 0 0 5px #ffffff30, 0 10px 22px #0002
     }
 
     .finish {
@@ -168,22 +166,20 @@
       top: 0;
       bottom: 0;
       width: 38px;
-      background:
-        linear-gradient(45deg, #fff 25%, #111 25% 50%, #fff 50% 75%, #111 75%),
-        linear-gradient(45deg, #111 25%, #fff 25% 50%, #111 50% 75%, #fff 75%);
+      background: linear-gradient(45deg, #fff 25%, #111 25% 50%, #fff 50% 75%, #111 75%);
       background-size: 22px 22px;
       opacity: .9;
-      border-left: 5px solid #ffd166;
+      border-left: 5px solid #ffd166
     }
 
     .lane {
       position: relative;
-      height: 74px;
+      height: 70px;
       margin: 8px 0;
       border-radius: 18px;
       background: linear-gradient(90deg, #ffffff22, #ffffff10);
       border: 2px dashed #ffffff55;
-      overflow: hidden;
+      overflow: hidden
     }
 
     .laneLabel {
@@ -195,17 +191,17 @@
       font-weight: 1000;
       background: #00000055;
       padding: 5px 10px;
-      border-radius: 999px;
+      border-radius: 999px
     }
 
     .car {
       position: absolute;
       left: 2%;
-      top: 21px;
+      top: 19px;
       font-size: 42px;
       transition: .7s cubic-bezier(.18, 1.25, .3, 1);
       filter: drop-shadow(0 8px 8px #0007);
-      z-index: 3;
+      z-index: 3
     }
 
     .car.boost {
@@ -251,103 +247,83 @@
       text-align: center
     }
 
-    .quiz {
+    .boardWrap {
       margin-top: 18px;
-      background: #fff;
+      background: white;
       border: 3px solid #dbeafe;
       border-radius: 24px;
       padding: 18px;
       box-shadow: 0 9px 20px #0001
     }
 
-    .question {
-      font-size: clamp(23px, 3vw, 37px);
-      line-height: 1.35;
-      font-weight: 1000;
-      margin: 0 0 16px
+    .boardTitle {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 14px
     }
 
-    .answers {
+    .boardTitle h2 {
+      margin: 0;
+      font-size: clamp(22px, 3vw, 35px)
+    }
+
+    .board {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: repeat(5, 1fr);
       gap: 12px
     }
 
-    .ans {
-      border: 3px solid transparent;
-      border-radius: 18px;
-      min-height: 76px;
-      background: #f8fafc;
-      padding: 14px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      text-align: left;
-      font-size: clamp(15px, 1.7vw, 20px);
-      line-height: 1.35;
-      font-weight: 850;
+    .card {
+      min-height: 92px;
+      border: 0;
+      border-radius: 20px;
       cursor: pointer;
-      transition: .15s;
+      color: #fff;
+      font-size: clamp(32px, 5vw, 54px);
+      font-weight: 1000;
+      background: linear-gradient(155deg, #49a1ff, #2089ff 45%, #245dc0);
+      box-shadow: inset 0 -9px 0 #0002, 0 8px 16px #1d4ed833;
+      transition: .18s;
+      position: relative;
+      overflow: hidden
     }
 
-    .ans:hover {
-      transform: translateY(-3px);
-      border-color: #93c5fd;
-      background: #eef6ff
+    .card:hover {
+      transform: translateY(-5px) scale(1.02);
+      filter: saturate(1.15)
     }
 
-    .letter {
-      flex: 0 0 38px;
-      height: 38px;
-      border-radius: 13px;
-      background: linear-gradient(135deg, #2488ff, #1d4ed8);
-      color: white;
+    .card.used {
+      background: linear-gradient(135deg, #cbd5e1, #64748b);
+      cursor: not-allowed;
+      opacity: .85;
+      transform: none
+    }
+
+    .card.used::after {
+      content: "✓";
+      position: absolute;
+      right: 13px;
+      top: 8px;
+      font-size: 25px
+    }
+
+    .card.powered::before {
+      content: "⚡";
+      position: absolute;
+      left: 10px;
+      top: 8px;
+      font-size: 23px;
+      background: #ffffff33;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
       display: flex;
       align-items: center;
-      justify-content: center;
-      font-weight: 1000
-    }
-
-    .ans.correct {
-      background: #e7fff4;
-      border-color: #10b981;
-      animation: pop .45s
-    }
-
-    .ans.wrong {
-      background: #fff1f2;
-      border-color: #ef4444;
-      animation: shake .35s
-    }
-
-    @keyframes pop {
-      45% {
-        transform: scale(1.035)
-      }
-    }
-
-    @keyframes shake {
-      30% {
-        transform: translateX(-8px)
-      }
-
-      60% {
-        transform: translateX(8px)
-      }
-    }
-
-    .result {
-      display: none;
-      margin-top: 14px;
-      padding: 13px 15px;
-      border-radius: 17px;
-      background: #fff8db;
-      font-weight: 1000;
-      line-height: 1.35
-    }
-
-    .result.show {
-      display: block
+      justify-content: center
     }
 
     .controls {
@@ -420,9 +396,11 @@
 
     .modal {
       background: white;
-      width: min(840px, 100%);
+      width: min(900px, 100%);
+      max-height: 92vh;
+      overflow: auto;
       border-radius: 30px;
-      padding: 26px;
+      padding: 24px;
       text-align: center;
       box-shadow: 0 30px 70px #0006;
       animation: modal .2s
@@ -433,6 +411,125 @@
         transform: scale(.9);
         opacity: .3
       }
+    }
+
+    .qtitle {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 12px
+    }
+
+    .badge {
+      background: #eef6ff;
+      color: #1d4ed8;
+      border-radius: 999px;
+      padding: 9px 14px;
+      font-weight: 1000
+    }
+
+    .close {
+      width: 40px;
+      height: 40px;
+      border: 0;
+      border-radius: 50%;
+      font-size: 24px;
+      font-weight: 1000;
+      background: #f1f5f9;
+      cursor: pointer
+    }
+
+    .question {
+      font-size: clamp(23px, 3vw, 36px);
+      line-height: 1.35;
+      font-weight: 1000;
+      margin: 0 0 16px;
+      text-align: left
+    }
+
+    .answers {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px
+    }
+
+    .ans {
+      border: 3px solid transparent;
+      border-radius: 18px;
+      min-height: 76px;
+      background: #f8fafc;
+      padding: 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-align: left;
+      font-size: clamp(15px, 1.7vw, 20px);
+      line-height: 1.35;
+      font-weight: 850;
+      cursor: pointer;
+      transition: .15s
+    }
+
+    .ans:hover {
+      transform: translateY(-3px);
+      border-color: #93c5fd;
+      background: #eef6ff
+    }
+
+    .letter {
+      flex: 0 0 38px;
+      height: 38px;
+      border-radius: 13px;
+      background: linear-gradient(135deg, #2488ff, #1d4ed8);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 1000
+    }
+
+    .ans.correct {
+      background: #e7fff4;
+      border-color: #10b981;
+      animation: pop .45s
+    }
+
+    .ans.wrong {
+      background: #fff1f2;
+      border-color: #ef4444;
+      animation: shake .35s
+    }
+
+    @keyframes pop {
+      45% {
+        transform: scale(1.035)
+      }
+    }
+
+    @keyframes shake {
+      30% {
+        transform: translateX(-8px)
+      }
+
+      60% {
+        transform: translateX(8px)
+      }
+    }
+
+    .result {
+      display: none;
+      margin-top: 14px;
+      padding: 13px 15px;
+      border-radius: 17px;
+      background: #fff8db;
+      font-weight: 1000;
+      line-height: 1.35;
+      text-align: left
+    }
+
+    .result.show {
+      display: block
     }
 
     .icon {
@@ -522,6 +619,10 @@
         grid-template-columns: 1fr 1fr
       }
 
+      .board {
+        grid-template-columns: repeat(4, 1fr)
+      }
+
       .answers {
         grid-template-columns: 1fr
       }
@@ -534,24 +635,37 @@
         font-size: 34px
       }
     }
+
+    @media(max-width:560px) {
+      .scoreboard {
+        grid-template-columns: 1fr
+      }
+
+      .board {
+        grid-template-columns: repeat(2, 1fr)
+      }
+    }
   </style>
 </head>
 
 <body>
   <header>
-    <h1>🏎️ Đua Xe Quiz: Cạnh tranh & Độc quyền</h1>
-    <div class="sub">Trả lời đúng để xe chạy lên. Có 12 power-up ẩn trong 20 câu.</div>
+    <h1>🏎️ Đua Xe Chọn Số: Cạnh tranh & Độc quyền</h1>
+    <div class="sub">Đội tới lượt tự chọn ô số 1–20. Trả lời đúng mới được điểm, chạy xe và kích hoạt power-up ẩn.</div>
     <div class="scoreboard" id="scoreboard"></div>
   </header>
+
   <main>
     <section class="game">
       <div class="info">
         <div class="pill turn" id="turn">🎯 Lượt: Team 1</div>
-        <div class="pill" id="count">Câu 1 / 20</div>
+        <div class="pill" id="count">Còn 20 câu</div>
       </div>
+
       <div class="race" id="race">
         <div class="finish"></div>
       </div>
+
       <div class="trackInfo">
         <div class="bar">
           <div class="progress" id="leaderProgress"></div>
@@ -561,19 +675,45 @@
           <div class="progress" id="questionProgress"></div>
         </div>
       </div>
-      <div class="quiz">
-        <div class="question" id="question"></div>
-        <div class="answers" id="answers"></div>
-        <div class="result" id="result"></div>
+
+      <div class="boardWrap">
+        <div class="boardTitle">
+          <h2>🎲 Chọn số câu hỏi</h2>
+          <div class="pill" id="selectedHint">Team tới lượt chọn 1 ô bất kỳ</div>
+        </div>
+        <div class="board" id="board"></div>
         <div class="controls">
-          <div class="leftc"><label class="switch"><input type="checkbox" id="power" checked> 12 power-up
-              ẩn</label><label class="switch"><input type="checkbox" id="sound" checked> Âm thanh</label></div>
-          <div class="rightc"><button class="btn gray" id="show">👀 Hiện đáp án</button><button class="btn" id="next"
-              disabled>Câu tiếp theo</button><button class="btn red" id="reset">Reset</button></div>
+          <div class="leftc">
+            <label class="switch"><input type="checkbox" id="power" checked> 12 power-up ẩn</label>
+            <label class="switch"><input type="checkbox" id="sound" checked> Âm thanh</label>
+          </div>
+          <div class="rightc">
+            <button class="btn red" id="reset">Reset</button>
+          </div>
         </div>
       </div>
     </section>
   </main>
+
+  <div class="modalbg" id="questionModal">
+    <div class="modal">
+      <div class="qtitle">
+        <span class="badge" id="qBadge">Câu</span>
+        <button class="close" id="closeQ">×</button>
+      </div>
+      <div class="question" id="question"></div>
+      <div class="answers" id="answers"></div>
+      <div class="result" id="result"></div>
+      <div class="controls">
+        <div></div>
+        <div class="rightc">
+          <button class="btn gray" id="show">👀 Hiện đáp án</button>
+          <button class="btn" id="next" disabled>Tiếp tục</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="modalbg" id="powerModal">
     <div class="modal">
       <div class="icon" id="powerIcon">🎁</div>
@@ -591,54 +731,219 @@
         class="btn" id="again">Chơi lại</button>
     </div>
   </div>
+
   <script>
     const QUESTIONS = [{ "q": "Độc quyền là gì?", "a": "B", "o": ["Sự cạnh tranh hoàn toàn tự do giữa các doanh nghiệp nhỏ", "Sự liên minh giữa các doanh nghiệp lớn có khả năng thâu tóm sản xuất và tiêu thụ hàng hóa", "Sự can thiệp trực tiếp của người tiêu dùng vào thị trường", "Sự phân chia đều lợi nhuận giữa các doanh nghiệp"] }, { "q": "Mục đích chủ yếu của độc quyền là gì?", "a": "C", "o": ["Giảm giá hàng hóa xuống thấp nhất", "Xóa bỏ hoàn toàn sản xuất hàng hóa", "Định ra giá cả độc quyền nhằm thu lợi nhuận độc quyền cao", "Làm cho mọi doanh nghiệp có quy mô bằng nhau"] }, { "q": "Một nguyên nhân hình thành độc quyền là gì?", "a": "A", "o": ["Sự phát triển của lực lượng sản xuất", "Sự biến mất của khoa học - kỹ thuật", "Sự giảm quy mô của các xí nghiệp lớn", "Sự xóa bỏ hoàn toàn thị trường"] }, { "q": "Khi khoa học - kỹ thuật phát triển, điều gì có thể xảy ra?", "a": "A", "o": ["Các xí nghiệp lớn có điều kiện hình thành", "Sản xuất chỉ còn ở quy mô nhỏ", "Cạnh tranh hoàn toàn biến mất ngay lập tức", "Người tiêu dùng trực tiếp quản lý doanh nghiệp"] }, { "q": "Vì sao cạnh tranh có thể dẫn đến độc quyền?", "a": "B", "o": ["Vì cạnh tranh làm mọi doanh nghiệp mạnh như nhau", "Vì doanh nghiệp nhỏ có thể hợp lại hoặc bị loại bỏ", "Vì cạnh tranh làm giá cả luôn cố định", "Vì cạnh tranh không ảnh hưởng đến quy mô doanh nghiệp"] }, { "q": "Khủng hoảng kinh tế góp phần hình thành độc quyền như thế nào?", "a": "B", "o": ["Làm cho các doanh nghiệp nhỏ luôn phát triển mạnh hơn", "Thúc đẩy quá trình tập trung sản xuất", "Làm mất hoàn toàn nhu cầu tiêu dùng", "Ngăn chặn mọi hình thức liên minh doanh nghiệp"] }, { "q": "Độc quyền nhà nước là gì?", "a": "B", "o": ["Nhà nước không tham gia bất kỳ hoạt động kinh tế nào", "Nhà nước nắm giữ vị thế độc quyền dựa trên sức mạnh của các tổ chức độc quyền trong lĩnh vực then chốt", "Người tiêu dùng quyết định toàn bộ giá cả thị trường", "Doanh nghiệp nhỏ kiểm soát toàn bộ nền kinh tế"] }, { "q": "Nguyên nhân thứ nhất hình thành độc quyền nhà nước là gì?", "a": "A", "o": ["Tích tụ và tập trung tư bản ngày càng lớn", "Doanh nghiệp nhỏ ngày càng tách rời nhau", "Sản xuất ngày càng phân tán", "Nhà nước ngừng điều tiết xã hội"] }, { "q": "Khi phân công lao động xã hội phát triển, các ngành mới thường có đặc điểm gì?", "a": "C", "o": ["Không cần vốn đầu tư", "Thu hồi vốn rất nhanh và lợi nhuận rất cao ngay lập tức", "Đầu tư lớn, thu hồi vốn chậm, ít lợi nhuận", "Không cần sự hỗ trợ từ nhà nước"] }, { "q": "Một nguyên nhân hình thành độc quyền nhà nước là để làm gì trước mâu thuẫn xã hội?", "a": "B", "o": ["Xóa bỏ hoàn toàn giai cấp", "Xoa dịu mâu thuẫn giữa tư sản, vô sản và nhân dân lao động", "Làm cho mâu thuẫn xã hội gay gắt hơn", "Loại bỏ toàn bộ hoạt động kinh tế đối ngoại"] }, { "q": "Trong quan hệ kinh tế đối ngoại, nhà nước tư bản can thiệp nhằm mục đích gì?", "a": "A", "o": ["Bảo hộ tư bản và tạo môi trường quốc tế thuận lợi", "Cấm mọi hình thức đầu tư ra nước ngoài", "Xóa bỏ toàn bộ thương mại quốc tế", "Làm suy yếu các tổ chức độc quyền trong nước"] }, { "q": "Bản chất của chủ nghĩa tư bản độc quyền nhà nước là gì?", "a": "B", "o": ["Sự tách rời hoàn toàn giữa nhà nước và tổ chức độc quyền tư nhân", "Sự kết hợp giữa tổ chức độc quyền tư nhân và nhà nước tư bản", "Sự biến mất của chủ nghĩa tư bản", "Sự kiểm soát nền kinh tế bởi người lao động"] }, { "q": "Độc quyền có tác động tích cực nào?", "a": "A", "o": ["Tạo khả năng nghiên cứu và phát triển khoa học - kỹ thuật", "Luôn làm giảm năng suất lao động", "Luôn làm mất hoàn toàn cạnh tranh", "Làm cho nền kinh tế ngừng phát triển"] }, { "q": "Đâu là tác động tiêu cực của độc quyền?", "a": "C", "o": ["Góp phần tăng năng suất lao động", "Tạo điều kiện nghiên cứu khoa học - kỹ thuật", "Gây thiệt hại cho người tiêu dùng và xã hội", "Nâng cao năng lực cạnh tranh trong mọi trường hợp"] }, { "q": "Trong trạng thái độc quyền, cạnh tranh có còn tồn tại không?", "a": "B", "o": ["Không, độc quyền xóa bỏ hoàn toàn cạnh tranh", "Có, vẫn tồn tại cạnh tranh giữa tổ chức độc quyền với xí nghiệp ngoài độc quyền, giữa các tổ chức độc quyền và trong nội bộ tổ chức độc quyền", "Không, vì mọi doanh nghiệp đều thuộc một chủ sở hữu", "Chỉ còn cạnh tranh giữa người tiêu dùng với nhau"] }, { "q": "Các hình thức tổ chức độc quyền gồm những hình thức nào?", "a": "A", "o": ["Cartel, syndicate, trust, consortium, conglomerate", "Công ty nhỏ, hộ gia đình, hợp tác xã, cá nhân", "Chợ truyền thống, siêu thị, cửa hàng tiện lợi", "Thuế, ngân sách, tín dụng, tiền tệ"] }, { "q": "Cartel là gì?", "a": "A", "o": ["Liên minh độc quyền về giá cả, phân chia thị trường, số lượng hàng hóa sản xuất", "Hình thức độc quyền thống nhất cả sản xuất và lưu thông", "Tổ chức độc quyền do một ngân hàng đứng đầu toàn bộ nền kinh tế", "Doanh nghiệp nhà nước trong lĩnh vực hạ tầng"] }, { "q": "Syndicate có đặc điểm gì?", "a": "B", "o": ["Doanh nghiệp mất độc lập cả sản xuất và lưu thông", "Mọi việc mua bán do một ban quản trị đảm nhiệm, các doanh nghiệp vẫn độc lập về sản xuất nhưng mất độc lập về lưu thông", "Chỉ là liên minh tạm thời giữa người tiêu dùng", "Không liên quan đến việc mua bán hàng hóa"] }, { "q": "Trust là gì?", "a": "A", "o": ["Hình thức độc quyền thống nhất cả sản xuất và lưu thông dưới sự quản lý của hội đồng quản trị", "Hình thức độc quyền chỉ liên minh về giá cả", "Hình thức độc quyền chỉ tồn tại trong nông nghiệp", "Hình thức sở hữu nhà nước trong ngành hạ tầng"] }, { "q": "Theo V.I. Lênin, tư bản tài chính là gì?", "a": "B", "o": ["Sự tách rời giữa tư bản ngân hàng và tư bản công nghiệp", "Kết quả của sự hợp nhất giữa tư bản ngân hàng của một số ít ngân hàng độc quyền lớn nhất với tư bản của các liên minh độc quyền công nghiệp", "Toàn bộ tiền tiết kiệm của người tiêu dùng", "Vốn đầu tư nhỏ của các hộ gia đình"] }];
+
+    // Có cả power tốt và power xấu để cân bằng game.
     const PUPS = [
-      { n: "Nitro", i: "🚀", e: "move3", d: "Tăng tốc thêm 3 ô!" },
-      { n: "Turbo", i: "⚡", e: "move2", d: "Tăng tốc thêm 2 ô!" },
+      { n: "Nitro", i: "🚀", e: "move3", d: "Xe tiến thêm 3 ô!" },
+      { n: "Turbo", i: "⚡", e: "move2", d: "Xe tiến thêm 2 ô!" },
       { n: "Gold", i: "🥇", e: "p30", d: "Cộng thêm 30 điểm." },
       { n: "Gift", i: "🎁", e: "p15", d: "Cộng thêm 15 điểm." },
+      { n: "Tax", i: "💸", e: "minus20", d: "Bị trừ 20 điểm." },
+      { n: "Baam", i: "💜", e: "minus15", d: "Bị trừ 15 điểm." },
+      { n: "Flat Tire", i: "🛞", e: "back2", d: "Xe bị lùi 2 ô." },
+      { n: "Red Light", i: "🚦", e: "stop", d: "Xe đứng yên thêm 1 lượt, câu đúng chỉ được điểm." },
       { n: "Banana", i: "🍌", e: "banana", d: "Đội đang dẫn đầu bị lùi 2 ô." },
-      { n: "Oil Spill", i: "🛢️", e: "oil", d: "Đối thủ kế tiếp mất lượt." },
       { n: "Magnet", i: "🧲", e: "magnet", d: "Hút 10 điểm từ đội đang dẫn đầu." },
-      { n: "Teleport", i: "🌀", e: "tele", d: "Dịch chuyển lên bằng đội đang dẫn đầu." },
       { n: "Swap", i: "🔄", e: "swap", d: "Đổi vị trí xe với đội đang dẫn đầu." },
-      { n: "Shield", i: "🛡️", e: "shield", d: "Chặn phạt lùi xe lần tiếp theo." },
-      { n: "Boom", i: "💥", e: "boom", d: "Tất cả đội khác lùi 1 ô." },
-      { n: "Comeback", i: "🔥", e: "come", d: "Nếu đang cuối bảng, tiến thêm 4 ô." }
+      { n: "Boom", i: "💥", e: "boom", d: "Tất cả đội khác bị trừ 10 điểm." },
+      { n: "Comeback", i: "🔥", e: "come", d: "Nếu đang cuối bảng, xe tiến thêm 4 ô." },
+      { n: "Shield", i: "🛡️", e: "shield", d: "Chặn 1 lần bị lùi xe." }
     ];
-    const $ = id => document.getElementById(id), MAX = 20, KEY = "raceQuizChuong4V1";
+
+    const $ = id => document.getElementById(id), MAX = 20, KEY = "raceChooseQuizChuong4V1";
     let s = {
       teams: [
-        { name: "Team 1", score: 0, pos: 0, car: "🏎️", shield: false, skip: false },
-        { name: "Team 2", score: 0, pos: 0, car: "🚙", shield: false, skip: false },
-        { name: "Team 3", score: 0, pos: 0, car: "🚗", shield: false, skip: false },
-        { name: "Team 4", score: 0, pos: 0, car: "🚕", shield: false, skip: false }
-      ], active: 0, qi: 0, answered: false, pups: []
+        { name: "Team 1", score: 0, pos: 0, car: "🏎️", shield: false, stop: false },
+        { name: "Team 2", score: 0, pos: 0, car: "🚙", shield: false, stop: false },
+        { name: "Team 3", score: 0, pos: 0, car: "🚗", shield: false, stop: false },
+        { name: "Team 4", score: 0, pos: 0, car: "🚕", shield: false, stop: false }
+      ], active: 0, used: Array(QUESTIONS.length).fill(false), selected: null, answered: false, pups: []
     };
-    function buildPups() { let a = Array(QUESTIONS.length).fill(null);[...Array(QUESTIONS.length).keys()].sort(() => Math.random() - .5).slice(0, 12).forEach(i => a[i] = PUPS[Math.floor(Math.random() * PUPS.length)]); return a }
+
+    function buildPups() {
+      let a = Array(QUESTIONS.length).fill(null);
+      [...Array(QUESTIONS.length).keys()].sort(() => Math.random() - .5).slice(0, 12).forEach(i => a[i] = PUPS[Math.floor(Math.random() * PUPS.length)]);
+      return a;
+    }
     function save() { localStorage.setItem(KEY, JSON.stringify(s)) }
-    function load() { try { let x = JSON.parse(localStorage.getItem(KEY)); if (x && x.teams && x.pups) { s = x; return } } catch (e) { } s.pups = buildPups() }
-    function render() { renderScores(); renderRace(); renderQ(); save() }
-    function renderScores() { $("scoreboard").innerHTML = s.teams.map((t, i) => `<div class="team ${i === s.active ? 'active' : ''}"><div class="name" contenteditable="true" data-name="${i}">${t.name}</div><div class="score" id="score${i}">${t.score}</div></div>`).join(""); document.querySelectorAll("[data-name]").forEach(el => el.onblur = () => { s.teams[+el.dataset.name].name = el.textContent.trim() || `Team ${+el.dataset.name + 1}`; render() }); $("turn").textContent = "🎯 Lượt: " + s.teams[s.active].name; $("count").textContent = `Câu ${Math.min(s.qi + 1, QUESTIONS.length)} / ${QUESTIONS.length}` }
-    function renderRace() { $("race").innerHTML = '<div class="finish"></div>' + s.teams.map((t, i) => `<div class="lane"><div class="laneLabel">${t.name} ${t.shield ? '🛡️' : ''} ${t.skip ? '🧊' : ''}</div><div class="car" id="car${i}">${t.car}</div></div>`).join(""); s.teams.forEach((t, i) => { let x = 2 + (Math.min(t.pos, MAX) / MAX) * 86; $("car" + i).style.left = x + "%" }); let leader = Math.max(...s.teams.map(t => t.pos)); $("leaderProgress").style.width = (leader / MAX * 100) + "%"; $("questionProgress").style.width = (s.qi / QUESTIONS.length * 100) + "%"; $("leaderText").textContent = `Leader: ${leader}/${MAX}` }
-    function renderQ() { let q = QUESTIONS[s.qi]; s.answered = false; $("result").className = "result"; $("next").disabled = true; $("show").disabled = false; if (!q) { winner(); return } $("question").textContent = q.q; $("answers").innerHTML = "";["A", "B", "C", "D"].forEach((L, idx) => { let b = document.createElement("button"); b.className = "ans"; b.innerHTML = `<span class="letter">${L}</span><span>${q.o[idx]}</span>`; b.onclick = () => check(b, L); $("answers").appendChild(b) }) }
-    function check(btn, L) { if (s.answered) return; s.answered = true; let q = QUESTIONS[s.qi]; document.querySelectorAll(".ans").forEach(b => { b.disabled = true; if (b.querySelector(".letter").textContent === q.a) b.classList.add("correct") }); if (L === q.a) { btn.classList.add("correct"); addScore(s.active, 10); move(s.active, 2); $("result").textContent = `✅ Đúng! ${s.teams[s.active].name} +10 điểm và xe tiến 2 ô.`; $("result").classList.add("show"); animateCar(s.active); confetti(50); sound("win"); setTimeout(reveal, 650) } else { btn.classList.add("wrong"); $("result").textContent = `❌ Sai. Đáp án đúng là ${q.a}. Xe đứng yên.`; $("result").classList.add("show"); sound("lose") } $("next").disabled = false; $("show").disabled = true; renderRace(); if (s.teams.some(t => t.pos >= MAX)) setTimeout(winner, 900); save() }
-    function reveal() { if (!$("power").checked) return; let p = s.pups[s.qi]; if (!p) return; s.pups[s.qi] = null; apply(p); save() }
-    function addScore(i, d) { s.teams[i].score = Math.max(0, s.teams[i].score + d); let el = $("score" + i); if (el) { el.textContent = s.teams[i].score; el.classList.add("bump"); setTimeout(() => el.classList.remove("bump"), 520) } }
+    function load() { try { let x = JSON.parse(localStorage.getItem(KEY)); if (x && x.teams && x.used && x.pups) { s = x; return } } catch (e) { } s.pups = buildPups() }
+    function render() { renderScores(); renderRace(); renderBoard(); save() }
+    function remaining() { return s.used.filter(x => !x).length }
+    function renderScores() {
+      $("scoreboard").innerHTML = s.teams.map((t, i) => `<div class="team ${i === s.active ? 'active' : ''}"><div class="name" contenteditable="true" data-name="${i}">${t.name}</div><div class="score" id="score${i}">${t.score}</div></div>`).join("");
+      document.querySelectorAll("[data-name]").forEach(el => el.onblur = () => { s.teams[+el.dataset.name].name = el.textContent.trim() || `Team ${+el.dataset.name + 1}`; render() });
+      $("turn").textContent = "🎯 Lượt chọn số: " + s.teams[s.active].name;
+      $("count").textContent = `Còn ${remaining()} câu`;
+      $("selectedHint").textContent = `${s.teams[s.active].name} chọn 1 ô bất kỳ`;
+    }
+    function renderRace() {
+      $("race").innerHTML = '<div class="finish"></div>' + s.teams.map((t, i) => `<div class="lane"><div class="laneLabel">${t.name} ${t.shield ? '🛡️' : ''} ${t.stop ? '🚦' : ''}</div><div class="car" id="car${i}">${t.car}</div></div>`).join("");
+      s.teams.forEach((t, i) => { let x = 2 + (Math.min(t.pos, MAX) / MAX) * 86; $("car" + i).style.left = x + "%" });
+      let leader = Math.max(...s.teams.map(t => t.pos));
+      $("leaderProgress").style.width = (leader / MAX * 100) + "%";
+      $("questionProgress").style.width = ((QUESTIONS.length - remaining()) / QUESTIONS.length * 100) + "%";
+      $("leaderText").textContent = `Leader: ${leader}/${MAX}`;
+    }
+    function renderBoard() {
+      $("board").innerHTML = "";
+      QUESTIONS.forEach((q, i) => {
+        let b = document.createElement("button");
+        b.className = "card" + (s.used[i] ? " used" : "") + (s.used[i] && s.pups[i] ? " powered" : "");
+        b.textContent = i + 1;
+        b.disabled = s.used[i] || s.answered;
+        b.onclick = () => openQuestion(i);
+        $("board").appendChild(b);
+      });
+    }
+    function openQuestion(i) {
+      if (s.used[i]) return;
+      s.selected = i; s.answered = false;
+      let q = QUESTIONS[i];
+      $("qBadge").textContent = `Ô số ${i + 1} • ${s.teams[s.active].name}`;
+      $("question").textContent = q.q;
+      $("answers").innerHTML = "";
+      $("result").className = "result";
+      $("result").textContent = "";
+      $("show").disabled = false;
+      $("next").disabled = true;
+      ["A", "B", "C", "D"].forEach((L, idx) => {
+        let b = document.createElement("button");
+        b.className = "ans";
+        b.innerHTML = `<span class="letter">${L}</span><span>${q.o[idx]}</span>`;
+        b.onclick = () => check(b, L);
+        $("answers").appendChild(b);
+      });
+      $("questionModal").classList.add("show");
+    }
+    function check(btn, L) {
+      if (s.answered) return;
+      s.answered = true;
+      let q = QUESTIONS[s.selected];
+      document.querySelectorAll(".ans").forEach(b => { b.disabled = true; if (b.querySelector(".letter").textContent === q.a) b.classList.add("correct") });
+      if (L === q.a) {
+        btn.classList.add("correct");
+        addScore(s.active, 10);
+
+        if (s.teams[s.active].stop) {
+          s.teams[s.active].stop = false;
+          $("result").textContent = `✅ Đúng! ${s.teams[s.active].name} +10 điểm, nhưng bị Red Light nên xe chưa tiến.`;
+        } else {
+          move(s.active, 2);
+          animateCar(s.active);
+          $("result").textContent = `✅ Đúng! ${s.teams[s.active].name} +10 điểm và xe tiến 2 ô.`;
+        }
+
+        $("result").classList.add("show");
+        confetti(50); sound("win");
+        setTimeout(reveal, 650);
+      } else {
+        btn.classList.add("wrong");
+        addScore(s.active, -5);
+        $("result").textContent = `❌ Sai. Đáp án đúng là ${q.a}. Đội bị trừ 5 điểm.`;
+        $("result").classList.add("show");
+        sound("lose");
+      }
+      s.used[s.selected] = true;
+      $("next").disabled = false;
+      $("show").disabled = true;
+      renderScores(); renderRace(); renderBoard();
+      if (s.teams.some(t => t.pos >= MAX)) setTimeout(winner, 900);
+      save();
+    }
+    function reveal() {
+      if (!$("power").checked) return;
+      let p = s.pups[s.selected];
+      if (!p) return;
+      apply(p);
+      save();
+    }
+    function addScore(i, d) {
+      s.teams[i].score = Math.max(0, s.teams[i].score + d);
+      let el = $("score" + i);
+      if (el) { el.textContent = s.teams[i].score; el.classList.add("bump"); setTimeout(() => el.classList.remove("bump"), 520) }
+    }
     function move(i, n) { s.teams[i].pos = Math.max(0, Math.min(MAX, s.teams[i].pos + n)); renderRace() }
     function losePos(i, n) { if (s.teams[i].shield) { s.teams[i].shield = false; return } move(i, -n) }
     function animateCar(i) { let el = $("car" + i); if (el) { el.classList.add("boost"); setTimeout(() => el.classList.remove("boost"), 700) } }
     function leaderIndex() { let m = Math.max(...s.teams.map(t => t.pos)); return s.teams.findIndex(t => t.pos === m) }
     function lastIndex() { let m = Math.min(...s.teams.map(t => t.pos)); return s.teams.findIndex(t => t.pos === m) }
-    function apply(p) { let i = s.active, lead = leaderIndex(), desc = p.d; if (p.e === "move3") move(i, 3); if (p.e === "move2") move(i, 2); if (p.e === "p30") addScore(i, 30); if (p.e === "p15") addScore(i, 15); if (p.e === "banana" && lead !== i) losePos(lead, 2); if (p.e === "oil") { let nxt = (i + 1) % s.teams.length; s.teams[nxt].skip = true; desc = `${s.teams[nxt].name} mất lượt kế tiếp.` } if (p.e === "magnet") { let amount = Math.min(10, s.teams[lead].score); if (lead !== i) { addScore(lead, -amount); addScore(i, amount); desc = `Hút ${amount} điểm từ ${s.teams[lead].name}.` } } if (p.e === "tele") { let m = Math.max(...s.teams.map(t => t.pos)); s.teams[i].pos = m; desc = `${s.teams[i].name} dịch chuyển lên vị trí dẫn đầu!` } if (p.e === "swap" && lead !== i) { let tmp = s.teams[i].pos; s.teams[i].pos = s.teams[lead].pos; s.teams[lead].pos = tmp; desc = `Đổi vị trí với ${s.teams[lead].name}.` } if (p.e === "shield") s.teams[i].shield = true; if (p.e === "boom") s.teams.forEach((t, idx) => { if (idx !== i) losePos(idx, 1) }); if (p.e === "come") { let last = lastIndex(); if (last === i) { move(i, 4); desc = "Đang cuối bảng nên tiến thêm 4 ô!" } else { move(i, 1); desc = "Không cuối bảng nên tiến thêm 1 ô." } } $("powerIcon").textContent = p.i; $("powerName").textContent = p.n; $("powerDesc").textContent = desc; $("powerModal").classList.add("show"); confetti(35); sound("power"); renderScores(); renderRace(); if (s.teams.some(t => t.pos >= MAX)) setTimeout(winner, 900) }
-    function nextQ() { if (!s.answered) return; if (s.teams.some(t => t.pos >= MAX)) { winner(); return } s.qi++; if (s.qi >= QUESTIONS.length) { winner(); save(); return } let n = (s.active + 1) % s.teams.length; let tries = 0; while (s.teams[n].skip && tries < 4) { s.teams[n].skip = false; n = (n + 1) % s.teams.length; tries++ } s.active = n; render() }
-    function showAns() { if (s.answered) return; let q = QUESTIONS[s.qi]; document.querySelectorAll(".ans").forEach(b => { if (b.querySelector(".letter").textContent === q.a) b.classList.add("correct") }); $("result").textContent = "Đáp án đúng là " + q.a; $("result").classList.add("show") }
-    function winner() { let sorted = [...s.teams].sort((a, b) => b.pos - a.pos || b.score - a.score); $("winnerName").textContent = sorted[0].name; $("winnerReason").textContent = `Về xa nhất: ${sorted[0].pos}/${MAX} ô, ${sorted[0].score} điểm.`; $("ranking").innerHTML = sorted.map((t, i) => `<div class="row"><span>${i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : '⭐'} ${t.name}</span><span>${t.pos} ô • ${t.score} điểm</span></div>`).join(""); $("winnerModal").classList.add("show"); confetti(120); sound("win") }
-    function reset() { if (!confirm("Reset cuộc đua?")) return; s = { teams: [{ name: "Team 1", score: 0, pos: 0, car: "🏎️", shield: false, skip: false }, { name: "Team 2", score: 0, pos: 0, car: "🚙", shield: false, skip: false }, { name: "Team 3", score: 0, pos: 0, car: "🚗", shield: false, skip: false }, { name: "Team 4", score: 0, pos: 0, car: "🚕", shield: false, skip: false }], active: 0, qi: 0, answered: false, pups: buildPups() }; localStorage.removeItem(KEY); $("winnerModal").classList.remove("show"); $("powerModal").classList.remove("show"); render() }
+    function apply(p) {
+      let i = s.active, lead = leaderIndex(), desc = p.d;
+      if (p.e === "move3") { move(i, 3); animateCar(i) }
+      if (p.e === "move2") { move(i, 2); animateCar(i) }
+      if (p.e === "p30") addScore(i, 30);
+      if (p.e === "p15") addScore(i, 15);
+      if (p.e === "minus20") addScore(i, -20);
+      if (p.e === "minus15") addScore(i, -15);
+      if (p.e === "back2") losePos(i, 2);
+      if (p.e === "stop") s.teams[i].stop = true;
+      if (p.e === "banana" && lead !== i) losePos(lead, 2);
+      if (p.e === "magnet") { let amount = Math.min(10, s.teams[lead].score); if (lead !== i) { addScore(lead, -amount); addScore(i, amount); desc = `Hút ${amount} điểm từ ${s.teams[lead].name}.` } }
+      if (p.e === "swap" && lead !== i) { let tmp = s.teams[i].pos; s.teams[i].pos = s.teams[lead].pos; s.teams[lead].pos = tmp; desc = `Đổi vị trí xe với ${s.teams[lead].name}.` }
+      if (p.e === "boom") s.teams.forEach((t, idx) => { if (idx !== i) addScore(idx, -10) });
+      if (p.e === "come") { let last = lastIndex(); if (last === i) { move(i, 4); desc = "Đang cuối bảng nên xe tiến thêm 4 ô!" } else { move(i, 1); desc = "Không cuối bảng nên chỉ tiến thêm 1 ô." } }
+      if (p.e === "shield") s.teams[i].shield = true;
+
+      $("powerIcon").textContent = p.i;
+      $("powerName").textContent = p.n;
+      $("powerDesc").textContent = desc;
+      $("powerModal").classList.add("show");
+      confetti(35); sound("power");
+      renderScores(); renderRace(); renderBoard();
+      if (s.teams.some(t => t.pos >= MAX)) setTimeout(winner, 900);
+    }
+    function nextTurn() {
+      $("questionModal").classList.remove("show");
+      if (s.teams.some(t => t.pos >= MAX) || remaining() === 0) { winner(); return }
+      s.selected = null; s.answered = false;
+      s.active = (s.active + 1) % s.teams.length;
+      render();
+    }
+    function showAns() {
+      if (s.answered) return;
+      let q = QUESTIONS[s.selected];
+      document.querySelectorAll(".ans").forEach(b => { if (b.querySelector(".letter").textContent === q.a) b.classList.add("correct") });
+      $("result").textContent = "Đáp án đúng là " + q.a;
+      $("result").classList.add("show");
+    }
+    function winner() {
+      let sorted = [...s.teams].sort((a, b) => b.pos - a.pos || b.score - a.score);
+      $("winnerName").textContent = sorted[0].name;
+      $("winnerReason").textContent = `Dẫn đầu: ${sorted[0].pos}/${MAX} ô, ${sorted[0].score} điểm.`;
+      $("ranking").innerHTML = sorted.map((t, i) => `<div class="row"><span>${i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : '⭐'} ${t.name}</span><span>${t.pos} ô • ${t.score} điểm</span></div>`).join("");
+      $("winnerModal").classList.add("show");
+      confetti(120); sound("win");
+    }
+    function reset() {
+      if (!confirm("Reset cuộc đua?")) return;
+      s = {
+        teams: [
+          { name: "Team 1", score: 0, pos: 0, car: "🏎️", shield: false, stop: false },
+          { name: "Team 2", score: 0, pos: 0, car: "🚙", shield: false, stop: false },
+          { name: "Team 3", score: 0, pos: 0, car: "🚗", shield: false, stop: false },
+          { name: "Team 4", score: 0, pos: 0, car: "🚕", shield: false, stop: false }
+        ], active: 0, used: Array(QUESTIONS.length).fill(false), selected: null, answered: false, pups: buildPups()
+      };
+      localStorage.removeItem(KEY);
+      $("winnerModal").classList.remove("show");
+      $("powerModal").classList.remove("show");
+      $("questionModal").classList.remove("show");
+      render();
+    }
     function confetti(n = 60) { let colors = ["#ff4fc3", "#2488ff", "#20c997", "#ffc857", "#9b5de5", "#ff4d6d"]; for (let i = 0; i < n; i++) { let c = document.createElement("div"); c.className = "confetti"; c.style.left = Math.random() * 100 + "vw"; c.style.top = "-20px"; c.style.background = colors[Math.floor(Math.random() * colors.length)]; c.style.animationDuration = .8 + Math.random() * 1.2 + "s"; document.body.appendChild(c); setTimeout(() => c.remove(), 1500) } }
     function sound(type) { if (!$("sound").checked) return; try { let ctx = new (window.AudioContext || window.webkitAudioContext)(), o = ctx.createOscillator(), g = ctx.createGain(); o.connect(g); g.connect(ctx.destination); let now = ctx.currentTime, f = type === "win" ? 760 : type === "lose" ? 170 : 560; o.frequency.setValueAtTime(f, now); g.gain.setValueAtTime(.06, now); g.gain.exponentialRampToValueAtTime(.001, now + .25); o.start(now); o.stop(now + .26) } catch (e) { } }
-    $("next").onclick = nextQ; $("show").onclick = showAns; $("reset").onclick = reset; $("powerOk").onclick = () => $("powerModal").classList.remove("show"); $("closeWin").onclick = () => $("winnerModal").classList.remove("show"); $("again").onclick = reset;
+
+    $("next").onclick = nextTurn;
+    $("show").onclick = showAns;
+    $("reset").onclick = reset;
+    $("powerOk").onclick = () => $("powerModal").classList.remove("show");
+    $("closeWin").onclick = () => $("winnerModal").classList.remove("show");
+    $("again").onclick = reset;
+    $("closeQ").onclick = () => $("questionModal").classList.remove("show");
+
     load(); render();
   </script>
 </body>
