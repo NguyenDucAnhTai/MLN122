@@ -1,1025 +1,646 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="vi">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Chương 4 Quiz Game - Cạnh tranh và Độc quyền</title>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Đua xe Quiz - Chương 4</title>
   <style>
-    :root{
-      --yellow:#ffc857;
-      --yellow2:#ffb703;
-      --blue:#2488ff;
-      --blue2:#1d4ed8;
-      --dark:#26344d;
-      --pink:#ff4fc3;
-      --green:#20c997;
-      --red:#ff4d6d;
-      --white:#fff;
-      --shadow: 0 12px 28px rgba(24,40,80,.20);
-      --radius:22px;
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0;
-      font-family: "Trebuchet MS", system-ui, -apple-system, Segoe UI, Arial, sans-serif;
-      background:
-        radial-gradient(circle at 20% 20%, rgba(255,255,255,.55) 0 2px, transparent 3px),
-        radial-gradient(circle at 80% 10%, rgba(255,255,255,.35) 0 2px, transparent 3px),
-        linear-gradient(135deg, #f7fbff 0%, #fff7dd 100%);
-      color:var(--dark);
-      overflow-x:hidden;
-    }
-    .topbar{
-      position:sticky; top:0; z-index:5;
-      min-height:120px;
-      padding:14px 20px 18px;
-      background:
-        radial-gradient(circle at 10% 50%, rgba(255,255,255,.22) 0 14px, transparent 15px),
-        radial-gradient(circle at 70% 40%, rgba(255,255,255,.18) 0 10px, transparent 11px),
-        linear-gradient(135deg, var(--yellow), #ffd977);
-      box-shadow: 0 3px 0 rgba(0,0,0,.07);
-    }
-    .title{
-      text-align:center;
-      font-size:clamp(22px,3vw,40px);
-      margin:0 0 12px;
-      font-weight:900;
-      color:#18233a;
-      text-shadow:0 2px 0 rgba(255,255,255,.5);
-    }
-    .scoreboard{
-      display:grid;
-      grid-template-columns: repeat(4, minmax(130px,1fr));
-      gap:12px;
-      max-width:1220px;
-      margin:0 auto;
-    }
-    .team{
-      position:relative;
-      background:rgba(255,255,255,.38);
-      border:2px solid rgba(255,255,255,.4);
-      border-radius:18px;
-      padding:10px 12px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      box-shadow:0 6px 15px rgba(95,63,0,.12);
-      transition:.25s transform,.25s box-shadow,.25s background;
-    }
-    .team.active{
-      transform:translateY(-4px) scale(1.02);
-      background:#fff;
-      box-shadow:0 12px 26px rgba(102,70,0,.25);
-      outline:4px solid rgba(255,79,195,.25);
-    }
-    .team.active .name{
-      background:var(--pink);
-      color:#fff;
-      padding:2px 10px;
-      border-radius:9px;
-    }
-    .name{
-      font-weight:900;
-      font-size:clamp(16px,2vw,25px);
-      min-width:85px;
-    }
-    .score{
-      font-size:clamp(24px,3vw,42px);
-      font-weight:1000;
-      color:#26344d;
-      line-height:1;
-      min-width:56px;
-      text-align:center;
-      transition:.25s transform;
-    }
-    .score.bump{animation:scoreBump .55s ease}
-    @keyframes scoreBump{
-      0%{transform:scale(1)}
-      35%{transform:scale(1.45) rotate(-3deg)}
-      100%{transform:scale(1)}
-    }
-    .score-tools{display:flex; gap:4px; flex-direction:column}
-    .tiny{
-      border:0;
-      width:28px;height:24px;
-      border-radius:9px;
-      background:#fff;
-      color:#26344d;
-      cursor:pointer;
-      font-weight:900;
-      box-shadow:0 2px 6px rgba(0,0,0,.12);
-    }
-    .tiny:hover{transform:scale(1.08)}
-    .toolbar{
-      max-width:1220px;
-      margin:16px auto 0;
-      padding:0 20px;
-      display:flex;
-      gap:10px;
-      align-items:center;
-      justify-content:space-between;
-      flex-wrap:wrap;
-    }
-    .toolbar-left,.toolbar-right{display:flex; gap:10px; align-items:center; flex-wrap:wrap}
-    .pill{
-      border:0;
-      border-radius:999px;
-      padding:11px 16px;
-      font-weight:900;
-      cursor:pointer;
-      color:white;
-      background:linear-gradient(135deg,#20c997,#0aa47c);
-      box-shadow:var(--shadow);
-      transition:.2s transform,.2s filter;
-    }
-    .pill:hover{transform:translateY(-2px); filter:saturate(1.1)}
-    .pill.secondary{background:linear-gradient(135deg,#64748b,#334155)}
-    .pill.danger{background:linear-gradient(135deg,#ff6b6b,#e03131)}
-    .pill.power{background:linear-gradient(135deg,#9b5de5,#f15bb5)}
-    .status{
-      font-weight:900;
-      background:#fff;
-      border-radius:999px;
-      padding:11px 18px;
-      box-shadow:0 7px 16px rgba(0,0,0,.1);
-    }
-    .main{
-      max-width:1220px;
-      margin:16px auto 42px;
-      padding:0 20px;
-    }
-    .board{
-      display:grid;
-      grid-template-columns:repeat(5, minmax(120px,1fr));
-      gap:14px;
-    }
-    .card{
-      position:relative;
-      border:0;
-      min-height:132px;
-      border-radius:22px;
-      cursor:pointer;
-      overflow:hidden;
-      color:#fff;
-      font-size:clamp(38px,7vw,74px);
-      font-weight:1000;
-      text-shadow:0 4px 0 rgba(0,0,0,.09);
-      background:
-        linear-gradient(135deg, rgba(255,255,255,.16), transparent 42%),
-        linear-gradient(155deg, #49a1ff 0%, #2089ff 45%, #245dc0 100%);
-      box-shadow: inset 0 -12px 0 rgba(0,0,0,.08), 0 8px 16px rgba(25,93,190,.24);
-      transition:.2s transform,.2s box-shadow,.2s filter;
-      isolation:isolate;
-    }
-    .card::after{
-      content:"";
-      position:absolute; inset:-40%;
-      background:linear-gradient(115deg, transparent 35%, rgba(255,255,255,.28) 45%, transparent 55%);
-      transform:translateX(-70%) rotate(15deg);
-      transition:.5s;
-      z-index:-1;
-    }
-    .card:hover{
-      transform:translateY(-6px) scale(1.02);
-      box-shadow: inset 0 -12px 0 rgba(0,0,0,.08), 0 16px 28px rgba(25,93,190,.32);
-      filter:saturate(1.15);
-    }
-    .card:hover::after{transform:translateX(70%) rotate(15deg)}
-    .card.used{
-      background:linear-gradient(135deg,#cbd5e1,#64748b);
-      cursor:not-allowed;
-      opacity:.82;
-      transform:none;
-      color:rgba(255,255,255,.75);
-    }
-    .card.used::before{
-      content:"✓";
-      position:absolute;
-      top:12px; right:16px;
-      font-size:28px;
-    }
-    .card.used.power-used::after{
-      content:"⚡";
-      position:absolute;
-      left:14px; top:10px;
-      font-size:26px;
-      z-index:2;
-      background:rgba(255,255,255,.22);
-      width:40px;height:40px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      border-radius:50%;
-      transform:none;
-    }
-    .modal-backdrop{
-      position:fixed; inset:0;
-      display:none;
-      align-items:center;
-      justify-content:center;
-      padding:18px;
-      background:rgba(15,23,42,.62);
-      backdrop-filter:blur(7px);
-      z-index:20;
-    }
-    .modal-backdrop.show{display:flex; animation:fadeIn .18s ease}
-    @keyframes fadeIn{from{opacity:0}to{opacity:1}}
-    .modal{
-      width:min(920px,100%);
-      max-height:92vh;
-      overflow:auto;
-      background:#fff;
-      border-radius:28px;
-      box-shadow:0 28px 70px rgba(0,0,0,.35);
-      padding:24px;
-      transform-origin:center;
-      animation:popIn .22s cubic-bezier(.2,1.15,.35,1.2);
-      border:5px solid rgba(255,200,87,.75);
-    }
-    @keyframes popIn{
-      from{transform:scale(.88) translateY(14px); opacity:.2}
-      to{transform:scale(1) translateY(0); opacity:1}
-    }
-    .modal.shake{animation:shake .35s ease}
-    @keyframes shake{
-      0%,100%{transform:translateX(0)}
-      25%{transform:translateX(-12px)}
-      50%{transform:translateX(12px)}
-      75%{transform:translateX(-8px)}
-    }
-    .modal-head{
-      display:flex;
-      justify-content:space-between;
-      gap:10px;
-      align-items:center;
-      margin-bottom:12px;
-    }
-    .badge{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      border-radius:999px;
-      padding:8px 12px;
-      background:#eef6ff;
-      color:#1453a6;
-      font-weight:900;
-    }
-    .close{
-      border:0; background:#f1f5f9; color:#334155;
-      width:38px;height:38px;border-radius:50%;
-      font-size:22px; font-weight:900; cursor:pointer;
-    }
-    .question{
-      font-size:clamp(22px,3vw,34px);
-      font-weight:1000;
-      line-height:1.25;
-      margin:14px 0 18px;
-    }
-    .answers{
-      display:grid;
-      gap:12px;
-    }
-    .answer{
-      border:3px solid transparent;
-      border-radius:18px;
-      padding:16px 18px;
-      background:#f8fafc;
-      text-align:left;
-      color:#26344d;
-      font-weight:800;
-      font-size:clamp(16px,2vw,21px);
-      cursor:pointer;
-      transition:.15s transform,.15s background,.15s border-color;
-      display:flex;
-      gap:12px;
-      align-items:flex-start;
-    }
-    .answer:hover{transform:translateX(5px); border-color:#a5c9ff; background:#eef6ff}
-    .answer .letter{
-      display:inline-flex; align-items:center; justify-content:center;
-      flex:0 0 36px; height:36px;
-      border-radius:12px;
-      background:linear-gradient(135deg,#2488ff,#1d4ed8);
-      color:#fff; font-weight:1000;
-    }
-    .answer.correct{
-      background:#e7fff4;
-      border-color:#20c997;
-      animation:pulseCorrect .55s ease;
-    }
-    .answer.wrong{
-      background:#fff0f3;
-      border-color:#ff4d6d;
-    }
-    @keyframes pulseCorrect{
-      0%{transform:scale(1)}
-      45%{transform:scale(1.03)}
-      100%{transform:scale(1)}
-    }
-    .result{
-      margin-top:16px;
-      padding:15px;
-      border-radius:18px;
-      background:#fff8db;
-      font-weight:900;
-      display:none;
-    }
-    .result.show{display:block}
-    .actions{
-      display:flex;
-      justify-content:flex-end;
-      gap:10px;
-      margin-top:18px;
-      flex-wrap:wrap;
-    }
-    .bigbtn{
-      border:0;
-      border-radius:16px;
-      padding:14px 18px;
-      font-weight:1000;
-      cursor:pointer;
-      color:#fff;
-      background:linear-gradient(135deg,#2488ff,#1d4ed8);
-      box-shadow:0 8px 16px rgba(29,78,216,.22);
-    }
-    .bigbtn.gray{background:linear-gradient(135deg,#64748b,#334155)}
-    .power-modal{
-      text-align:center;
-      border:5px solid rgba(155,93,229,.35);
-    }
-    .power-icon{
-      font-size:84px;
-      line-height:1;
-      animation:floatIcon 1.2s ease-in-out infinite alternate;
-    }
-    @keyframes floatIcon{to{transform:translateY(-10px) rotate(4deg)}}
-    .power-name{
-      margin:8px 0 8px;
-      font-size:clamp(30px,5vw,54px);
-      font-weight:1000;
-      color:#7c3aed;
-    }
-    .power-desc{
-      font-size:clamp(18px,2.4vw,26px);
-      font-weight:900;
-      color:#26344d;
-      background:#f5f3ff;
-      padding:14px;
-      border-radius:18px;
-    }
-    .winner-modal{
-      text-align:center;
-      border:6px solid rgba(255,200,87,.9);
-      background:
-        radial-gradient(circle at 20% 18%, rgba(255,255,255,.95) 0 58px, transparent 59px),
-        linear-gradient(135deg,#fffdf3,#eef6ff);
-    }
-    .winner-crown{
-      font-size:94px;
-      line-height:1;
-      animation:winnerFloat 1s ease-in-out infinite alternate;
-      filter:drop-shadow(0 8px 12px rgba(0,0,0,.16));
-    }
-    @keyframes winnerFloat{
-      to{transform:translateY(-10px) rotate(-4deg) scale(1.05)}
-    }
-    .winner-title{
-      margin:8px 0 4px;
-      font-size:clamp(34px,5vw,64px);
-      color:#ff8c00;
-      font-weight:1000;
-      text-shadow:0 3px 0 rgba(255,255,255,.9);
-    }
-    .winner-name{
-      display:inline-block;
-      margin:10px 0;
-      padding:10px 22px;
-      border-radius:999px;
-      background:linear-gradient(135deg,#ff4fc3,#9b5de5);
-      color:#fff;
-      font-size:clamp(26px,4vw,48px);
-      font-weight:1000;
-      box-shadow:0 12px 28px rgba(155,93,229,.28);
-    }
-    .winner-score{
-      font-size:clamp(22px,3vw,34px);
-      font-weight:1000;
-      color:#26344d;
-      margin:8px 0 16px;
-    }
-    .ranking{
-      display:grid;
-      gap:10px;
-      max-width:520px;
-      margin:14px auto 0;
-      text-align:left;
-    }
-    .rank-row{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:12px;
-      background:#fff;
-      border-radius:16px;
-      padding:12px 16px;
-      font-weight:900;
-      box-shadow:0 6px 16px rgba(0,0,0,.09);
-    }
-    .rank-row:first-child{
-      background:linear-gradient(135deg,#fff1a8,#ffd166);
-    }
-    .rank-left{
-      display:flex;
-      align-items:center;
-      gap:10px;
-    }
-    .rank-medal{
-      width:34px;
-      height:34px;
-      border-radius:50%;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      background:#eef6ff;
+    * {
+      box-sizing: border-box
     }
 
-    .toast{
-      position:fixed; left:50%; bottom:22px;
-      transform:translateX(-50%) translateY(100px);
-      z-index:40;
-      background:#18233a; color:#fff;
-      padding:14px 18px;
-      border-radius:999px;
-      box-shadow:var(--shadow);
-      font-weight:900;
-      transition:.25s;
-      opacity:0;
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Segoe UI", Arial, Tahoma, sans-serif;
+      color: #1f2a44;
+      background:
+        radial-gradient(circle at 8% 15%, #ffffff88 0 14px, transparent 15px),
+        radial-gradient(circle at 85% 12%, #ffffff77 0 18px, transparent 19px),
+        linear-gradient(135deg, #dff6ff, #fff4ca 48%, #ffe1f3);
+      overflow-x: hidden;
     }
-    .toast.show{transform:translateX(-50%) translateY(0); opacity:1}
-    .confetti{
-      position:fixed;
-      width:10px;height:16px;
-      pointer-events:none;
-      z-index:50;
-      border-radius:3px;
-      animation:fall 1.3s linear forwards;
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      padding: 15px 20px 18px;
+      background: linear-gradient(135deg, #ffd166, #ffb703);
+      box-shadow: 0 5px 0 #00000012;
     }
-    @keyframes fall{
-      to{transform:translateY(105vh) rotate(720deg); opacity:0}
+
+    h1 {
+      text-align: center;
+      margin: 0;
+      font-size: clamp(25px, 4vw, 48px);
+      font-weight: 1000;
+      text-shadow: 0 3px 0 #ffffff88;
     }
-    .mini-help{
-      max-width:1220px;
-      margin:0 auto 14px;
-      padding:0 20px;
-      font-weight:800;
-      color:#53627a;
+
+    .sub {
+      text-align: center;
+      font-weight: 850;
+      color: #475569;
+      margin: 6px 0 0
     }
-    .switch{
-      display:inline-flex; align-items:center; gap:9px;
-      font-weight:900; background:#fff; border-radius:999px; padding:8px 12px;
-      box-shadow:0 5px 14px rgba(0,0,0,.1)
+
+    .scoreboard {
+      max-width: 1180px;
+      margin: 14px auto 0;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
     }
-    .switch input{accent-color:#9b5de5; width:18px; height:18px}
-    @media (max-width:850px){
-      .scoreboard{grid-template-columns:repeat(2,1fr)}
-      .board{grid-template-columns:repeat(4,1fr)}
-      .card{min-height:105px}
+
+    .team {
+      background: #ffffffdd;
+      border-radius: 20px;
+      padding: 12px;
+      box-shadow: 0 9px 18px #0002;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      border: 4px solid transparent;
+      transition: .2s;
     }
-    @media (max-width:560px){
-      .topbar{min-height:auto}
-      .scoreboard{grid-template-columns:1fr}
-      .board{grid-template-columns:repeat(2,1fr)}
-      .card{min-height:96px}
-      .toolbar{padding:0 12px}
-      .main{padding:0 12px}
+
+    .team.active {
+      transform: translateY(-4px) scale(1.02);
+      border-color: #ff4fc355
+    }
+
+    .name {
+      color: #fff;
+      border-radius: 13px;
+      padding: 5px 11px;
+      min-width: 105px;
+      text-align: center;
+      font-size: clamp(16px, 2vw, 25px);
+      font-weight: 1000;
+    }
+
+    .team:nth-child(1) .name {
+      background: linear-gradient(135deg, #38bdf8, #1d4ed8)
+    }
+
+    .team:nth-child(2) .name {
+      background: linear-gradient(135deg, #fb7185, #e11d48)
+    }
+
+    .team:nth-child(3) .name {
+      background: linear-gradient(135deg, #34d399, #059669)
+    }
+
+    .team:nth-child(4) .name {
+      background: linear-gradient(135deg, #a78bfa, #7c3aed)
+    }
+
+    .score {
+      font-size: clamp(25px, 3vw, 42px);
+      font-weight: 1000;
+      line-height: 1
+    }
+
+    .score.bump {
+      animation: bump .5s
+    }
+
+    @keyframes bump {
+      40% {
+        transform: scale(1.45) rotate(-4deg)
+      }
+    }
+
+    main {
+      max-width: 1180px;
+      margin: 22px auto 42px;
+      padding: 0 18px
+    }
+
+    .game {
+      background: #ffffffd9;
+      border: 4px solid #fff;
+      border-radius: 30px;
+      padding: 20px;
+      box-shadow: 0 18px 40px #0002;
+    }
+
+    .info {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 16px
+    }
+
+    .pill {
+      background: #fff;
+      border-radius: 999px;
+      padding: 10px 16px;
+      font-weight: 1000;
+      box-shadow: 0 6px 14px #0001
+    }
+
+    .turn {
+      background: #fff7ed;
+      color: #9a3412;
+      border: 2px solid #fed7aa
+    }
+
+    .race {
+      position: relative;
+      border-radius: 26px;
+      overflow: hidden;
+      padding: 16px 12px;
+      background:
+        linear-gradient(90deg, #e2e8f0 0 2px, transparent 2px 8px),
+        linear-gradient(180deg, #334155, #1e293b);
+      box-shadow: inset 0 0 0 5px #ffffff30, 0 10px 22px #0002;
+    }
+
+    .finish {
+      position: absolute;
+      right: 5%;
+      top: 0;
+      bottom: 0;
+      width: 38px;
+      background:
+        linear-gradient(45deg, #fff 25%, #111 25% 50%, #fff 50% 75%, #111 75%),
+        linear-gradient(45deg, #111 25%, #fff 25% 50%, #111 50% 75%, #fff 75%);
+      background-size: 22px 22px;
+      opacity: .9;
+      border-left: 5px solid #ffd166;
+    }
+
+    .lane {
+      position: relative;
+      height: 74px;
+      margin: 8px 0;
+      border-radius: 18px;
+      background: linear-gradient(90deg, #ffffff22, #ffffff10);
+      border: 2px dashed #ffffff55;
+      overflow: hidden;
+    }
+
+    .laneLabel {
+      position: absolute;
+      left: 10px;
+      top: 9px;
+      z-index: 2;
+      color: #fff;
+      font-weight: 1000;
+      background: #00000055;
+      padding: 5px 10px;
+      border-radius: 999px;
+    }
+
+    .car {
+      position: absolute;
+      left: 2%;
+      top: 21px;
+      font-size: 42px;
+      transition: .7s cubic-bezier(.18, 1.25, .3, 1);
+      filter: drop-shadow(0 8px 8px #0007);
+      z-index: 3;
+    }
+
+    .car.boost {
+      animation: boost .7s
+    }
+
+    @keyframes boost {
+      40% {
+        transform: scale(1.25) rotate(-8deg)
+      }
+    }
+
+    .trackInfo {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 12px;
+      align-items: center;
+      margin-top: 14px
+    }
+
+    .bar {
+      height: 18px;
+      background: #e2e8f0;
+      border-radius: 999px;
+      overflow: hidden;
+      box-shadow: inset 0 3px 6px #0002
+    }
+
+    .progress {
+      height: 100%;
+      width: 0;
+      background: linear-gradient(90deg, #38bdf8, #1d4ed8);
+      transition: .55s
+    }
+
+    .centerText {
+      background: white;
+      border-radius: 999px;
+      padding: 8px 14px;
+      font-weight: 1000;
+      box-shadow: 0 6px 14px #0001;
+      min-width: 135px;
+      text-align: center
+    }
+
+    .quiz {
+      margin-top: 18px;
+      background: #fff;
+      border: 3px solid #dbeafe;
+      border-radius: 24px;
+      padding: 18px;
+      box-shadow: 0 9px 20px #0001
+    }
+
+    .question {
+      font-size: clamp(23px, 3vw, 37px);
+      line-height: 1.35;
+      font-weight: 1000;
+      margin: 0 0 16px
+    }
+
+    .answers {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px
+    }
+
+    .ans {
+      border: 3px solid transparent;
+      border-radius: 18px;
+      min-height: 76px;
+      background: #f8fafc;
+      padding: 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-align: left;
+      font-size: clamp(15px, 1.7vw, 20px);
+      line-height: 1.35;
+      font-weight: 850;
+      cursor: pointer;
+      transition: .15s;
+    }
+
+    .ans:hover {
+      transform: translateY(-3px);
+      border-color: #93c5fd;
+      background: #eef6ff
+    }
+
+    .letter {
+      flex: 0 0 38px;
+      height: 38px;
+      border-radius: 13px;
+      background: linear-gradient(135deg, #2488ff, #1d4ed8);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 1000
+    }
+
+    .ans.correct {
+      background: #e7fff4;
+      border-color: #10b981;
+      animation: pop .45s
+    }
+
+    .ans.wrong {
+      background: #fff1f2;
+      border-color: #ef4444;
+      animation: shake .35s
+    }
+
+    @keyframes pop {
+      45% {
+        transform: scale(1.035)
+      }
+    }
+
+    @keyframes shake {
+      30% {
+        transform: translateX(-8px)
+      }
+
+      60% {
+        transform: translateX(8px)
+      }
+    }
+
+    .result {
+      display: none;
+      margin-top: 14px;
+      padding: 13px 15px;
+      border-radius: 17px;
+      background: #fff8db;
+      font-weight: 1000;
+      line-height: 1.35
+    }
+
+    .result.show {
+      display: block
+    }
+
+    .controls {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 16px
+    }
+
+    .leftc,
+    .rightc {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap
+    }
+
+    button.btn {
+      border: 0;
+      border-radius: 16px;
+      padding: 13px 17px;
+      color: white;
+      font-weight: 1000;
+      cursor: pointer;
+      box-shadow: 0 9px 18px #0002;
+      background: linear-gradient(135deg, #2488ff, #1d4ed8)
+    }
+
+    .btn:disabled {
+      opacity: .55;
+      cursor: not-allowed
+    }
+
+    .gray {
+      background: linear-gradient(135deg, #64748b, #334155) !important
+    }
+
+    .red {
+      background: linear-gradient(135deg, #ff6b6b, #e03131) !important
+    }
+
+    .switch {
+      background: white;
+      border-radius: 99px;
+      padding: 9px 12px;
+      font-weight: 900;
+      box-shadow: 0 6px 14px #0001
+    }
+
+    input {
+      accent-color: #9b5de5
+    }
+
+    .modalbg {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: #0f172a99;
+      backdrop-filter: blur(7px);
+      z-index: 30;
+      padding: 18px
+    }
+
+    .modalbg.show {
+      display: flex
+    }
+
+    .modal {
+      background: white;
+      width: min(840px, 100%);
+      border-radius: 30px;
+      padding: 26px;
+      text-align: center;
+      box-shadow: 0 30px 70px #0006;
+      animation: modal .2s
+    }
+
+    @keyframes modal {
+      from {
+        transform: scale(.9);
+        opacity: .3
+      }
+    }
+
+    .icon {
+      font-size: 90px;
+      animation: float 1s infinite alternate
+    }
+
+    @keyframes float {
+      to {
+        transform: translateY(-10px) rotate(4deg)
+      }
+    }
+
+    .mtitle {
+      font-size: clamp(34px, 5vw, 58px);
+      font-weight: 1000;
+      color: #7c3aed;
+      margin: 8px 0
+    }
+
+    .mdesc {
+      font-size: clamp(18px, 2.5vw, 27px);
+      font-weight: 950;
+      background: #f5f3ff;
+      border-radius: 18px;
+      padding: 15px;
+      line-height: 1.35
+    }
+
+    .winner .mtitle {
+      color: #ff8c00
+    }
+
+    .winnerName {
+      display: inline-block;
+      margin: 12px 0;
+      padding: 10px 24px;
+      border-radius: 99px;
+      background: linear-gradient(135deg, #ff4fc3, #9b5de5);
+      color: white;
+      font-size: clamp(28px, 4vw, 52px);
+      font-weight: 1000
+    }
+
+    .rank {
+      max-width: 600px;
+      margin: 14px auto 0;
+      display: grid;
+      gap: 10px;
+      text-align: left
+    }
+
+    .row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      background: white;
+      border-radius: 16px;
+      padding: 13px 16px;
+      font-weight: 1000;
+      box-shadow: 0 6px 16px #0001
+    }
+
+    .row:first-child {
+      background: linear-gradient(135deg, #fff1a8, #ffd166)
+    }
+
+    .confetti {
+      position: fixed;
+      width: 10px;
+      height: 16px;
+      pointer-events: none;
+      z-index: 60;
+      border-radius: 3px;
+      animation: fall 1.35s linear forwards
+    }
+
+    @keyframes fall {
+      to {
+        transform: translateY(105vh) rotate(720deg);
+        opacity: 0
+      }
+    }
+
+    @media(max-width:850px) {
+      .scoreboard {
+        grid-template-columns: 1fr 1fr
+      }
+
+      .answers {
+        grid-template-columns: 1fr
+      }
+
+      .lane {
+        height: 66px
+      }
+
+      .car {
+        font-size: 34px
+      }
     }
   </style>
 </head>
+
 <body>
-  <header class="topbar">
-    <h1 class="title">🎮 Chương 4: Cạnh tranh & Độc quyền</h1>
-    <section class="scoreboard" id="scoreboard"></section>
+  <header>
+    <h1>🏎️ Đua Xe Quiz: Cạnh tranh & Độc quyền</h1>
+    <div class="sub">Trả lời đúng để xe chạy lên. Có 12 power-up ẩn trong 20 câu.</div>
+    <div class="scoreboard" id="scoreboard"></div>
   </header>
-
-  <div class="toolbar">
-    <div class="toolbar-left">
-      <span class="status" id="turnStatus">Lượt: Team 1</span>
-      <label class="switch"><input type="checkbox" id="powerToggle" checked /> Power-ups ẩn</label>
-      <label class="switch"><input type="checkbox" id="soundToggle" checked /> Âm thanh</label>
-    </div>
-    <div class="toolbar-right">
-      <button class="pill secondary" id="nextBtn">⏭ Đổi lượt</button>
-      <button class="pill danger" id="resetBtn">🔄 Reset game</button>
-    </div>
-  </div>
-
-  <p class="mini-help">Cách chơi: Team đang tới lượt chọn ô → chọn đáp án. Đúng +10 điểm. Sau câu đúng có thể xuất hiện power-up cộng/trừ/đổi điểm.</p>
-
-  <main class="main">
-    <section class="board" id="board"></section>
+  <main>
+    <section class="game">
+      <div class="info">
+        <div class="pill turn" id="turn">🎯 Lượt: Team 1</div>
+        <div class="pill" id="count">Câu 1 / 20</div>
+      </div>
+      <div class="race" id="race">
+        <div class="finish"></div>
+      </div>
+      <div class="trackInfo">
+        <div class="bar">
+          <div class="progress" id="leaderProgress"></div>
+        </div>
+        <div class="centerText" id="leaderText">Leader: 0/20</div>
+        <div class="bar">
+          <div class="progress" id="questionProgress"></div>
+        </div>
+      </div>
+      <div class="quiz">
+        <div class="question" id="question"></div>
+        <div class="answers" id="answers"></div>
+        <div class="result" id="result"></div>
+        <div class="controls">
+          <div class="leftc"><label class="switch"><input type="checkbox" id="power" checked> 12 power-up
+              ẩn</label><label class="switch"><input type="checkbox" id="sound" checked> Âm thanh</label></div>
+          <div class="rightc"><button class="btn gray" id="show">👀 Hiện đáp án</button><button class="btn" id="next"
+              disabled>Câu tiếp theo</button><button class="btn red" id="reset">Reset</button></div>
+        </div>
+      </div>
+    </section>
   </main>
-
-  <div class="modal-backdrop" id="questionBackdrop">
-    <div class="modal" id="questionModal">
-      <div class="modal-head">
-        <span class="badge" id="questionBadge">Câu 1 • Team 1</span>
-        <button class="close" id="closeQuestion">×</button>
-      </div>
-      <div class="question" id="questionText"></div>
-      <div class="answers" id="answers"></div>
-      <div class="result" id="result"></div>
-      <div class="actions">
-        <button class="bigbtn gray" id="showAnswerBtn">👀 Hiện đáp án</button>
-        <button class="bigbtn" id="continueBtn" style="display:none">Tiếp tục</button>
-      </div>
+  <div class="modalbg" id="powerModal">
+    <div class="modal">
+      <div class="icon" id="powerIcon">🎁</div>
+      <div class="mtitle" id="powerName">Power-up</div>
+      <div class="mdesc" id="powerDesc"></div><br><button class="btn" id="powerOk">OK</button>
     </div>
   </div>
-
-  <div class="modal-backdrop" id="powerBackdrop">
-    <div class="modal power-modal">
-      <div class="power-icon" id="powerIcon">🎁</div>
-      <div class="power-name" id="powerName">Gift</div>
-      <div class="power-desc" id="powerDesc">Power-up ẩn trong ô vừa chọn!</div>
-      <div class="actions" style="justify-content:center">
-        <button class="bigbtn" id="powerOk">OK</button>
-      </div>
+  <div class="modalbg" id="winnerModal">
+    <div class="modal winner">
+      <div class="icon">🏆</div>
+      <div class="mtitle">Kết thúc cuộc đua!</div>
+      <div class="winnerName" id="winnerName"></div>
+      <div class="mdesc" id="winnerReason"></div>
+      <div class="rank" id="ranking"></div><br><button class="btn gray" id="closeWin">Xem lại</button> <button
+        class="btn" id="again">Chơi lại</button>
     </div>
   </div>
-
-  <div class="modal-backdrop" id="winnerBackdrop">
-    <div class="modal winner-modal">
-      <div class="winner-crown">🏆</div>
-      <div class="winner-title">Game Over!</div>
-      <div class="winner-name" id="winnerName">Team thắng</div>
-      <div class="winner-score" id="winnerScore">0 điểm</div>
-      <div class="ranking" id="rankingList"></div>
-      <div class="actions" style="justify-content:center">
-        <button class="bigbtn gray" id="closeWinner">Xem lại bảng</button>
-        <button class="bigbtn" id="playAgain">Chơi lại</button>
-      </div>
-    </div>
-  </div>
-
-  <div class="toast" id="toast">Saved</div>
-
   <script>
-    const QUESTIONS = [
-      {q:"Độc quyền là gì?", a:"B", options:{A:"Sự cạnh tranh hoàn toàn tự do giữa các doanh nghiệp nhỏ", B:"Sự liên minh giữa các doanh nghiệp lớn có khả năng thâu tóm sản xuất và tiêu thụ hàng hóa", C:"Sự can thiệp trực tiếp của người tiêu dùng vào thị trường", D:"Sự phân chia đều lợi nhuận giữa các doanh nghiệp"}},
-      {q:"Mục đích chủ yếu của độc quyền là gì?", a:"C", options:{A:"Giảm giá hàng hóa xuống thấp nhất", B:"Xóa bỏ hoàn toàn sản xuất hàng hóa", C:"Định ra giá cả độc quyền nhằm thu lợi nhuận độc quyền cao", D:"Làm cho mọi doanh nghiệp có quy mô bằng nhau"}},
-      {q:"Một nguyên nhân hình thành độc quyền là gì?", a:"A", options:{A:"Sự phát triển của lực lượng sản xuất", B:"Sự biến mất của khoa học - kỹ thuật", C:"Sự giảm quy mô của các xí nghiệp lớn", D:"Sự xóa bỏ hoàn toàn thị trường"}},
-      {q:"Khi khoa học - kỹ thuật phát triển, điều gì có thể xảy ra?", a:"A", options:{A:"Các xí nghiệp lớn có điều kiện hình thành", B:"Sản xuất chỉ còn ở quy mô nhỏ", C:"Cạnh tranh hoàn toàn biến mất ngay lập tức", D:"Người tiêu dùng trực tiếp quản lý doanh nghiệp"}},
-      {q:"Vì sao cạnh tranh có thể dẫn đến độc quyền?", a:"B", options:{A:"Vì cạnh tranh làm mọi doanh nghiệp mạnh như nhau", B:"Vì doanh nghiệp nhỏ có thể hợp lại hoặc bị loại bỏ", C:"Vì cạnh tranh làm giá cả luôn cố định", D:"Vì cạnh tranh không ảnh hưởng đến quy mô doanh nghiệp"}},
-      {q:"Khủng hoảng kinh tế góp phần hình thành độc quyền như thế nào?", a:"B", options:{A:"Làm cho các doanh nghiệp nhỏ luôn phát triển mạnh hơn", B:"Thúc đẩy quá trình tập trung sản xuất", C:"Làm mất hoàn toàn nhu cầu tiêu dùng", D:"Ngăn chặn mọi hình thức liên minh doanh nghiệp"}},
-      {q:"Độc quyền nhà nước là gì?", a:"B", options:{A:"Nhà nước không tham gia bất kỳ hoạt động kinh tế nào", B:"Nhà nước nắm giữ vị thế độc quyền dựa trên sức mạnh của các tổ chức độc quyền trong lĩnh vực then chốt", C:"Người tiêu dùng quyết định toàn bộ giá cả thị trường", D:"Doanh nghiệp nhỏ kiểm soát toàn bộ nền kinh tế"}},
-      {q:"Nguyên nhân thứ nhất hình thành độc quyền nhà nước là gì?", a:"A", options:{A:"Tích tụ và tập trung tư bản ngày càng lớn", B:"Doanh nghiệp nhỏ ngày càng tách rời nhau", C:"Sản xuất ngày càng phân tán", D:"Nhà nước ngừng điều tiết xã hội"}},
-      {q:"Khi phân công lao động xã hội phát triển, các ngành mới thường có đặc điểm gì?", a:"C", options:{A:"Không cần vốn đầu tư", B:"Thu hồi vốn rất nhanh và lợi nhuận rất cao ngay lập tức", C:"Đầu tư lớn, thu hồi vốn chậm, ít lợi nhuận", D:"Không cần sự hỗ trợ từ nhà nước"}},
-      {q:"Một nguyên nhân hình thành độc quyền nhà nước là để làm gì trước mâu thuẫn xã hội?", a:"B", options:{A:"Xóa bỏ hoàn toàn giai cấp", B:"Xoa dịu mâu thuẫn giữa tư sản, vô sản và nhân dân lao động", C:"Làm cho mâu thuẫn xã hội gay gắt hơn", D:"Loại bỏ toàn bộ hoạt động kinh tế đối ngoại"}},
-      {q:"Trong quan hệ kinh tế đối ngoại, nhà nước tư bản can thiệp nhằm mục đích gì?", a:"A", options:{A:"Bảo hộ tư bản và tạo môi trường quốc tế thuận lợi", B:"Cấm mọi hình thức đầu tư ra nước ngoài", C:"Xóa bỏ toàn bộ thương mại quốc tế", D:"Làm suy yếu các tổ chức độc quyền trong nước"}},
-      {q:"Bản chất của chủ nghĩa tư bản độc quyền nhà nước là gì?", a:"B", options:{A:"Sự tách rời hoàn toàn giữa nhà nước và tổ chức độc quyền tư nhân", B:"Sự kết hợp giữa tổ chức độc quyền tư nhân và nhà nước tư bản", C:"Sự biến mất của chủ nghĩa tư bản", D:"Sự kiểm soát nền kinh tế bởi người lao động"}},
-      {q:"Độc quyền có tác động tích cực nào?", a:"A", options:{A:"Tạo khả năng nghiên cứu và phát triển khoa học - kỹ thuật", B:"Luôn làm giảm năng suất lao động", C:"Luôn làm mất hoàn toàn cạnh tranh", D:"Làm cho nền kinh tế ngừng phát triển"}},
-      {q:"Đâu là tác động tiêu cực của độc quyền?", a:"C", options:{A:"Góp phần tăng năng suất lao động", B:"Tạo điều kiện nghiên cứu khoa học - kỹ thuật", C:"Gây thiệt hại cho người tiêu dùng và xã hội", D:"Nâng cao năng lực cạnh tranh trong mọi trường hợp"}},
-      {q:"Trong trạng thái độc quyền, cạnh tranh có còn tồn tại không?", a:"B", options:{A:"Không, độc quyền xóa bỏ hoàn toàn cạnh tranh", B:"Có, vẫn tồn tại cạnh tranh giữa tổ chức độc quyền với xí nghiệp ngoài độc quyền, giữa các tổ chức độc quyền và trong nội bộ tổ chức độc quyền", C:"Không, vì mọi doanh nghiệp đều thuộc một chủ sở hữu", D:"Chỉ còn cạnh tranh giữa người tiêu dùng với nhau"}},
-      {q:"Các hình thức tổ chức độc quyền gồm những hình thức nào?", a:"A", options:{A:"Cartel, syndicate, trust, consortium, conglomerate", B:"Công ty nhỏ, hộ gia đình, hợp tác xã, cá nhân", C:"Chợ truyền thống, siêu thị, cửa hàng tiện lợi", D:"Thuế, ngân sách, tín dụng, tiền tệ"}},
-      {q:"Cartel là gì?", a:"A", options:{A:"Liên minh độc quyền về giá cả, phân chia thị trường, số lượng hàng hóa sản xuất", B:"Hình thức độc quyền thống nhất cả sản xuất và lưu thông", C:"Tổ chức độc quyền do một ngân hàng đứng đầu toàn bộ nền kinh tế", D:"Doanh nghiệp nhà nước trong lĩnh vực hạ tầng"}},
-      {q:"Syndicate có đặc điểm gì?", a:"B", options:{A:"Doanh nghiệp mất độc lập cả sản xuất và lưu thông", B:"Mọi việc mua bán do một ban quản trị đảm nhiệm, các doanh nghiệp vẫn độc lập về sản xuất nhưng mất độc lập về lưu thông", C:"Chỉ là liên minh tạm thời giữa người tiêu dùng", D:"Không liên quan đến việc mua bán hàng hóa"}},
-      {q:"Trust là gì?", a:"A", options:{A:"Hình thức độc quyền thống nhất cả sản xuất và lưu thông dưới sự quản lý của hội đồng quản trị", B:"Hình thức độc quyền chỉ liên minh về giá cả", C:"Hình thức độc quyền chỉ tồn tại trong nông nghiệp", D:"Hình thức sở hữu nhà nước trong ngành hạ tầng"}},
-      {q:"Theo V.I. Lênin, tư bản tài chính là gì?", a:"B", options:{A:"Sự tách rời giữa tư bản ngân hàng và tư bản công nghiệp", B:"Kết quả của sự hợp nhất giữa tư bản ngân hàng của một số ít ngân hàng độc quyền lớn nhất với tư bản của các liên minh độc quyền công nghiệp", C:"Toàn bộ tiền tiết kiệm của người tiêu dùng", D:"Vốn đầu tư nhỏ của các hộ gia đình"}}
+    const QUESTIONS = [{ "q": "Độc quyền là gì?", "a": "B", "o": ["Sự cạnh tranh hoàn toàn tự do giữa các doanh nghiệp nhỏ", "Sự liên minh giữa các doanh nghiệp lớn có khả năng thâu tóm sản xuất và tiêu thụ hàng hóa", "Sự can thiệp trực tiếp của người tiêu dùng vào thị trường", "Sự phân chia đều lợi nhuận giữa các doanh nghiệp"] }, { "q": "Mục đích chủ yếu của độc quyền là gì?", "a": "C", "o": ["Giảm giá hàng hóa xuống thấp nhất", "Xóa bỏ hoàn toàn sản xuất hàng hóa", "Định ra giá cả độc quyền nhằm thu lợi nhuận độc quyền cao", "Làm cho mọi doanh nghiệp có quy mô bằng nhau"] }, { "q": "Một nguyên nhân hình thành độc quyền là gì?", "a": "A", "o": ["Sự phát triển của lực lượng sản xuất", "Sự biến mất của khoa học - kỹ thuật", "Sự giảm quy mô của các xí nghiệp lớn", "Sự xóa bỏ hoàn toàn thị trường"] }, { "q": "Khi khoa học - kỹ thuật phát triển, điều gì có thể xảy ra?", "a": "A", "o": ["Các xí nghiệp lớn có điều kiện hình thành", "Sản xuất chỉ còn ở quy mô nhỏ", "Cạnh tranh hoàn toàn biến mất ngay lập tức", "Người tiêu dùng trực tiếp quản lý doanh nghiệp"] }, { "q": "Vì sao cạnh tranh có thể dẫn đến độc quyền?", "a": "B", "o": ["Vì cạnh tranh làm mọi doanh nghiệp mạnh như nhau", "Vì doanh nghiệp nhỏ có thể hợp lại hoặc bị loại bỏ", "Vì cạnh tranh làm giá cả luôn cố định", "Vì cạnh tranh không ảnh hưởng đến quy mô doanh nghiệp"] }, { "q": "Khủng hoảng kinh tế góp phần hình thành độc quyền như thế nào?", "a": "B", "o": ["Làm cho các doanh nghiệp nhỏ luôn phát triển mạnh hơn", "Thúc đẩy quá trình tập trung sản xuất", "Làm mất hoàn toàn nhu cầu tiêu dùng", "Ngăn chặn mọi hình thức liên minh doanh nghiệp"] }, { "q": "Độc quyền nhà nước là gì?", "a": "B", "o": ["Nhà nước không tham gia bất kỳ hoạt động kinh tế nào", "Nhà nước nắm giữ vị thế độc quyền dựa trên sức mạnh của các tổ chức độc quyền trong lĩnh vực then chốt", "Người tiêu dùng quyết định toàn bộ giá cả thị trường", "Doanh nghiệp nhỏ kiểm soát toàn bộ nền kinh tế"] }, { "q": "Nguyên nhân thứ nhất hình thành độc quyền nhà nước là gì?", "a": "A", "o": ["Tích tụ và tập trung tư bản ngày càng lớn", "Doanh nghiệp nhỏ ngày càng tách rời nhau", "Sản xuất ngày càng phân tán", "Nhà nước ngừng điều tiết xã hội"] }, { "q": "Khi phân công lao động xã hội phát triển, các ngành mới thường có đặc điểm gì?", "a": "C", "o": ["Không cần vốn đầu tư", "Thu hồi vốn rất nhanh và lợi nhuận rất cao ngay lập tức", "Đầu tư lớn, thu hồi vốn chậm, ít lợi nhuận", "Không cần sự hỗ trợ từ nhà nước"] }, { "q": "Một nguyên nhân hình thành độc quyền nhà nước là để làm gì trước mâu thuẫn xã hội?", "a": "B", "o": ["Xóa bỏ hoàn toàn giai cấp", "Xoa dịu mâu thuẫn giữa tư sản, vô sản và nhân dân lao động", "Làm cho mâu thuẫn xã hội gay gắt hơn", "Loại bỏ toàn bộ hoạt động kinh tế đối ngoại"] }, { "q": "Trong quan hệ kinh tế đối ngoại, nhà nước tư bản can thiệp nhằm mục đích gì?", "a": "A", "o": ["Bảo hộ tư bản và tạo môi trường quốc tế thuận lợi", "Cấm mọi hình thức đầu tư ra nước ngoài", "Xóa bỏ toàn bộ thương mại quốc tế", "Làm suy yếu các tổ chức độc quyền trong nước"] }, { "q": "Bản chất của chủ nghĩa tư bản độc quyền nhà nước là gì?", "a": "B", "o": ["Sự tách rời hoàn toàn giữa nhà nước và tổ chức độc quyền tư nhân", "Sự kết hợp giữa tổ chức độc quyền tư nhân và nhà nước tư bản", "Sự biến mất của chủ nghĩa tư bản", "Sự kiểm soát nền kinh tế bởi người lao động"] }, { "q": "Độc quyền có tác động tích cực nào?", "a": "A", "o": ["Tạo khả năng nghiên cứu và phát triển khoa học - kỹ thuật", "Luôn làm giảm năng suất lao động", "Luôn làm mất hoàn toàn cạnh tranh", "Làm cho nền kinh tế ngừng phát triển"] }, { "q": "Đâu là tác động tiêu cực của độc quyền?", "a": "C", "o": ["Góp phần tăng năng suất lao động", "Tạo điều kiện nghiên cứu khoa học - kỹ thuật", "Gây thiệt hại cho người tiêu dùng và xã hội", "Nâng cao năng lực cạnh tranh trong mọi trường hợp"] }, { "q": "Trong trạng thái độc quyền, cạnh tranh có còn tồn tại không?", "a": "B", "o": ["Không, độc quyền xóa bỏ hoàn toàn cạnh tranh", "Có, vẫn tồn tại cạnh tranh giữa tổ chức độc quyền với xí nghiệp ngoài độc quyền, giữa các tổ chức độc quyền và trong nội bộ tổ chức độc quyền", "Không, vì mọi doanh nghiệp đều thuộc một chủ sở hữu", "Chỉ còn cạnh tranh giữa người tiêu dùng với nhau"] }, { "q": "Các hình thức tổ chức độc quyền gồm những hình thức nào?", "a": "A", "o": ["Cartel, syndicate, trust, consortium, conglomerate", "Công ty nhỏ, hộ gia đình, hợp tác xã, cá nhân", "Chợ truyền thống, siêu thị, cửa hàng tiện lợi", "Thuế, ngân sách, tín dụng, tiền tệ"] }, { "q": "Cartel là gì?", "a": "A", "o": ["Liên minh độc quyền về giá cả, phân chia thị trường, số lượng hàng hóa sản xuất", "Hình thức độc quyền thống nhất cả sản xuất và lưu thông", "Tổ chức độc quyền do một ngân hàng đứng đầu toàn bộ nền kinh tế", "Doanh nghiệp nhà nước trong lĩnh vực hạ tầng"] }, { "q": "Syndicate có đặc điểm gì?", "a": "B", "o": ["Doanh nghiệp mất độc lập cả sản xuất và lưu thông", "Mọi việc mua bán do một ban quản trị đảm nhiệm, các doanh nghiệp vẫn độc lập về sản xuất nhưng mất độc lập về lưu thông", "Chỉ là liên minh tạm thời giữa người tiêu dùng", "Không liên quan đến việc mua bán hàng hóa"] }, { "q": "Trust là gì?", "a": "A", "o": ["Hình thức độc quyền thống nhất cả sản xuất và lưu thông dưới sự quản lý của hội đồng quản trị", "Hình thức độc quyền chỉ liên minh về giá cả", "Hình thức độc quyền chỉ tồn tại trong nông nghiệp", "Hình thức sở hữu nhà nước trong ngành hạ tầng"] }, { "q": "Theo V.I. Lênin, tư bản tài chính là gì?", "a": "B", "o": ["Sự tách rời giữa tư bản ngân hàng và tư bản công nghiệp", "Kết quả của sự hợp nhất giữa tư bản ngân hàng của một số ít ngân hàng độc quyền lớn nhất với tư bản của các liên minh độc quyền công nghiệp", "Toàn bộ tiền tiết kiệm của người tiêu dùng", "Vốn đầu tư nhỏ của các hộ gia đình"] }];
+    const PUPS = [
+      { n: "Nitro", i: "🚀", e: "move3", d: "Tăng tốc thêm 3 ô!" },
+      { n: "Turbo", i: "⚡", e: "move2", d: "Tăng tốc thêm 2 ô!" },
+      { n: "Gold", i: "🥇", e: "p30", d: "Cộng thêm 30 điểm." },
+      { n: "Gift", i: "🎁", e: "p15", d: "Cộng thêm 15 điểm." },
+      { n: "Banana", i: "🍌", e: "banana", d: "Đội đang dẫn đầu bị lùi 2 ô." },
+      { n: "Oil Spill", i: "🛢️", e: "oil", d: "Đối thủ kế tiếp mất lượt." },
+      { n: "Magnet", i: "🧲", e: "magnet", d: "Hút 10 điểm từ đội đang dẫn đầu." },
+      { n: "Teleport", i: "🌀", e: "tele", d: "Dịch chuyển lên bằng đội đang dẫn đầu." },
+      { n: "Swap", i: "🔄", e: "swap", d: "Đổi vị trí xe với đội đang dẫn đầu." },
+      { n: "Shield", i: "🛡️", e: "shield", d: "Chặn phạt lùi xe lần tiếp theo." },
+      { n: "Boom", i: "💥", e: "boom", d: "Tất cả đội khác lùi 1 ô." },
+      { n: "Comeback", i: "🔥", e: "come", d: "Nếu đang cuối bảng, tiến thêm 4 ô." }
     ];
-
-    const POWERUPS = [
-      {name:"Fairy", icon:"🧚", effect:"take", desc:"Mất {x} điểm"},
-      {name:"Thief", icon:"🦝", effect:"steal", desc:"Cướp {x} điểm từ team cao nhất"},
-      {name:"Rocket", icon:"🚀", effect:"first", desc:"Bay lên hạng nhất"},
-      {name:"Virus", icon:"🦠", effect:"reset", desc:"Reset toàn bộ điểm"},
-      {name:"Shark", icon:"🦈", effect:"othersLose", desc:"Team khác mất {x} điểm"},
-      {name:"Magnet", icon:"🧲", effect:"magnet", desc:"Hút {x} điểm từ team cao nhất"},
-      {name:"Lifesaver", icon:"🛟", effect:"give", desc:"Được cộng {x} điểm"},
-      {name:"Seesaw", icon:"⚖️", effect:"swap", desc:"Đổi điểm với team ngẫu nhiên"},
-      {name:"Gold", icon:"🥇", effect:"gold", desc:"Được cộng 50 điểm"},
-      {name:"Boom", icon:"💥", effect:"boom", desc:"Mất 50 điểm"},
-      {name:"Gift", icon:"🎁", effect:"gift", desc:"Được cộng {x} điểm"},
-      {name:"Baam", icon:"💜", effect:"baam", desc:"Mất {x} điểm"}
-    ];
-
-    const state = {
-      teams:[
-        {name:"Team 1", score:0},
-        {name:"Team 2", score:0},
-        {name:"Team 3", score:0},
-        {name:"Team 4", score:0}
-      ],
-      activeTeam:0,
-      used:Array(QUESTIONS.length).fill(false),
-      hiddenPowerups:[],
-      currentQuestion:null,
-      answered:false
+    const $ = id => document.getElementById(id), MAX = 20, KEY = "raceQuizChuong4V1";
+    let s = {
+      teams: [
+        { name: "Team 1", score: 0, pos: 0, car: "🏎️", shield: false, skip: false },
+        { name: "Team 2", score: 0, pos: 0, car: "🚙", shield: false, skip: false },
+        { name: "Team 3", score: 0, pos: 0, car: "🚗", shield: false, skip: false },
+        { name: "Team 4", score: 0, pos: 0, car: "🚕", shield: false, skip: false }
+      ], active: 0, qi: 0, answered: false, pups: []
     };
-
-    const $ = (id)=>document.getElementById(id);
-
-    const scoreboard = $("scoreboard");
-    const board = $("board");
-    const turnStatus = $("turnStatus");
-    const questionBackdrop = $("questionBackdrop");
-    const questionModal = $("questionModal");
-    const questionBadge = $("questionBadge");
-    const questionText = $("questionText");
-    const answers = $("answers");
-    const result = $("result");
-    const showAnswerBtn = $("showAnswerBtn");
-    const continueBtn = $("continueBtn");
-    const powerBackdrop = $("powerBackdrop");
-    const powerIcon = $("powerIcon");
-    const powerName = $("powerName");
-    const powerDesc = $("powerDesc");
-    const winnerBackdrop = $("winnerBackdrop");
-    const winnerName = $("winnerName");
-    const winnerScore = $("winnerScore");
-    const rankingList = $("rankingList");
-    const toast = $("toast");
-
-    function save(){
-      localStorage.setItem("monopolyQuizStateV4", JSON.stringify({
-        teams:state.teams,
-        activeTeam:state.activeTeam,
-        used:state.used,
-        hiddenPowerups:state.hiddenPowerups
-      }));
-    }
-
-    function buildHiddenPowerups(){
-      // Power-ups được rải sẵn trong các ô, nhưng người chơi không thấy trước.
-      // null = ô bình thường. Chỉ 12/20 ô có power-up, không phải ô nào cũng có.
-      const slots = Array(QUESTIONS.length).fill(null);
-      const powerIndexes = [...Array(QUESTIONS.length).keys()]
-        .sort(() => Math.random() - 0.5)
-        .slice(0, 12);
-
-      powerIndexes.forEach((cardIndex) => {
-        slots[cardIndex] = POWERUPS[Math.floor(Math.random() * POWERUPS.length)];
-      });
-
-      return slots;
-    }
-
-    function load(){
-      try{
-        const raw = localStorage.getItem("monopolyQuizStateV4");
-        if(raw){
-          const data = JSON.parse(raw);
-          if(data.teams && data.used){
-            state.teams = data.teams;
-            state.activeTeam = data.activeTeam || 0;
-            state.used = data.used;
-            state.hiddenPowerups = Array.isArray(data.hiddenPowerups) && data.hiddenPowerups.length === QUESTIONS.length
-              ? data.hiddenPowerups
-              : buildHiddenPowerups();
-            return;
-          }
-        }
-      }catch(e){}
-
-      state.hiddenPowerups = buildHiddenPowerups();
-    }
-    function render(){
-      renderScoreboard();
-      renderBoard();
-      turnStatus.textContent = "Lượt: " + state.teams[state.activeTeam].name;
-      save();
-    }
-    function renderScoreboard(){
-      scoreboard.innerHTML = "";
-      state.teams.forEach((team,i)=>{
-        const el = document.createElement("div");
-        el.className = "team" + (i===state.activeTeam ? " active":"");
-        el.innerHTML = `
-          <div>
-            <div class="name" contenteditable="true" data-index="${i}">${team.name}</div>
-          </div>
-          <div class="score" id="score-${i}">${team.score}</div>
-          <div class="score-tools">
-            <button class="tiny" data-score="${i}" data-delta="10">+</button>
-            <button class="tiny" data-score="${i}" data-delta="-10">−</button>
-          </div>
-        `;
-        scoreboard.appendChild(el);
-      });
-      document.querySelectorAll("[contenteditable][data-index]").forEach(el=>{
-        el.addEventListener("blur", ()=>{
-          const i = Number(el.dataset.index);
-          state.teams[i].name = el.textContent.trim() || `Team ${i+1}`;
-          render();
-        });
-      });
-      document.querySelectorAll("[data-score]").forEach(btn=>{
-        btn.addEventListener("click", ()=>{
-          addScore(Number(btn.dataset.score), Number(btn.dataset.delta));
-          render();
-        });
-      });
-    }
-    function renderBoard(){
-      board.innerHTML = "";
-      QUESTIONS.forEach((q,i)=>{
-        const btn = document.createElement("button");
-        btn.className = "card" + (state.used[i] ? " used":"") + (state.used[i] && state.hiddenPowerups[i] ? " power-used":"");
-        btn.textContent = i+1;
-        btn.disabled = state.used[i];
-        btn.addEventListener("click", ()=>openQuestion(i));
-        board.appendChild(btn);
-      });
-    }
-    function openQuestion(index){
-      state.currentQuestion = index;
-      state.answered = false;
-      const q = QUESTIONS[index];
-      questionBadge.textContent = `Câu ${index+1} • ${state.teams[state.activeTeam].name}`;
-      questionText.textContent = q.q;
-      answers.innerHTML = "";
-      result.className = "result";
-      result.textContent = "";
-      showAnswerBtn.style.display = "inline-block";
-      continueBtn.style.display = "none";
-      Object.entries(q.options).forEach(([letter,text])=>{
-        const btn = document.createElement("button");
-        btn.className = "answer";
-        btn.innerHTML = `<span class="letter">${letter}</span><span>${text}</span>`;
-        btn.addEventListener("click", ()=>checkAnswer(btn, letter));
-        answers.appendChild(btn);
-      });
-      questionBackdrop.classList.add("show");
-    }
-    function checkAnswer(btn, letter){
-      if(state.answered) return;
-      state.answered = true;
-      const q = QUESTIONS[state.currentQuestion];
-      const buttons = [...document.querySelectorAll(".answer")];
-      buttons.forEach(b=>b.disabled = true);
-      buttons.forEach(b=>{
-        const l = b.querySelector(".letter").textContent;
-        if(l === q.a) b.classList.add("correct");
-      });
-      if(letter === q.a){
-        btn.classList.add("correct");
-        state.used[state.currentQuestion] = true;
-        addScore(state.activeTeam, 10);
-        result.textContent = `✅ Chính xác! ${state.teams[state.activeTeam].name} +10 điểm.`;
-        result.classList.add("show");
-        confettiBurst();
-        sound("win");
-        setTimeout(()=>{
-          revealCardPowerup();
-        },650);
-      }else{
-        btn.classList.add("wrong");
-        state.used[state.currentQuestion] = true;
-        result.textContent = `❌ Sai rồi. Đáp án đúng là ${q.a}. Không được kích hoạt power-up.`;
-        result.classList.add("show");
-        questionModal.classList.add("shake");
-        sound("lose");
-        setTimeout(()=>questionModal.classList.remove("shake"),400);
-      }
-      showAnswerBtn.style.display = "none";
-      continueBtn.style.display = "inline-block";
-      render();
-    }
-    function showAnswer(){
-      if(state.answered) return;
-      const q = QUESTIONS[state.currentQuestion];
-      [...document.querySelectorAll(".answer")].forEach(b=>{
-        const l = b.querySelector(".letter").textContent;
-        if(l === q.a) b.classList.add("correct");
-      });
-      result.textContent = `Đáp án đúng là ${q.a}.`;
-      result.classList.add("show");
-    }
-    function addScore(teamIndex, delta){
-      state.teams[teamIndex].score = Math.max(0, state.teams[teamIndex].score + delta);
-      renderScoreboard();
-      const scoreEl = $(`score-${teamIndex}`);
-      if(scoreEl){
-        scoreEl.classList.add("bump");
-        setTimeout(()=>scoreEl.classList.remove("bump"),560);
-      }
-      save();
-    }
-    function setScore(teamIndex, value){
-      state.teams[teamIndex].score = Math.max(0, value);
-      renderScoreboard();
-      const scoreEl = $(`score-${teamIndex}`);
-      if(scoreEl) scoreEl.classList.add("bump");
-      setTimeout(()=>scoreEl && scoreEl.classList.remove("bump"),560);
-      save();
-    }
-    function nextTeam(){
-      state.activeTeam = (state.activeTeam + 1) % state.teams.length;
-      render();
-    }
-    function closeQuestionModal(){
-      questionBackdrop.classList.remove("show");
-    }
-    function randomPoint(){
-      return [5,10,15,20,25][Math.floor(Math.random()*5)];
-    }
-    function otherTeamIndexes(){
-      return state.teams.map((_,i)=>i).filter(i=>i!==state.activeTeam);
-    }
-    function highestOtherTeam(){
-      const others = otherTeamIndexes();
-      return others.sort((a,b)=>state.teams[b].score - state.teams[a].score)[0];
-    }
-    function randomOtherTeam(){
-      const others = otherTeamIndexes();
-      return others[Math.floor(Math.random()*others.length)];
-    }
-    function revealCardPowerup(){
-      if(!$("powerToggle").checked) return;
-      const cardIndex = state.currentQuestion;
-      const p = state.hiddenPowerups[cardIndex];
-      if(!p) return;
-
-      // Chỉ gọi hàm này khi trả lời đúng. Mỗi ô chỉ dùng power-up một lần.
-      state.hiddenPowerups[cardIndex] = null;
-      triggerPowerup(p);
-    }
-
-    function triggerPowerup(p){
-      const x = randomPoint();
-      const t = state.activeTeam;
-      let desc = p.desc.replace("{x}", x);
-      let target;
-      switch(p.effect){
-        case "take":
-          addScore(t, -x);
-          break;
-        case "give":
-        case "gift":
-          addScore(t, x);
-          break;
-        case "gold":
-          addScore(t, 50);
-          break;
-        case "boom":
-          addScore(t, -50);
-          break;
-        case "baam":
-          addScore(t, -x);
-          break;
-        case "steal":
-        case "magnet":
-          target = highestOtherTeam();
-          const stealAmount = Math.min(x, state.teams[target].score);
-          addScore(target, -stealAmount);
-          addScore(t, stealAmount);
-          desc = `${state.teams[t].name} lấy ${stealAmount} điểm từ ${state.teams[target].name}`;
-          break;
-        case "othersLose":
-          otherTeamIndexes().forEach(i=>addScore(i, -x));
-          break;
-        case "first":
-          const max = Math.max(...state.teams.map(tm=>tm.score));
-          setScore(t, max + 10);
-          desc = `${state.teams[t].name} bay lên hạng nhất!`;
-          break;
-        case "reset":
-          state.teams.forEach((_,i)=>setScore(i,0));
-          break;
-        case "swap":
-          target = randomOtherTeam();
-          const temp = state.teams[t].score;
-          setScore(t, state.teams[target].score);
-          setScore(target, temp);
-          desc = `${state.teams[t].name} đổi điểm với ${state.teams[target].name}`;
-          break;
-      }
-      powerIcon.textContent = p.icon;
-      powerName.textContent = p.name;
-      powerDesc.textContent = desc;
-      powerBackdrop.classList.add("show");
-      confettiBurst(24);
-      sound("power");
-      render();
-    }
-    function allQuestionsDone(){
-      return state.used.every(Boolean);
-    }
-
-    function showWinnerScreen(){
-      const maxScore = Math.max(...state.teams.map(team => team.score));
-      const winners = state.teams.filter(team => team.score === maxScore);
-      const sortedTeams = [...state.teams].sort((a,b) => b.score - a.score);
-
-      if(winners.length === 1){
-        winnerName.textContent = winners[0].name;
-        winnerScore.textContent = `${winners[0].score} điểm`;
-      }else{
-        winnerName.textContent = winners.map(team => team.name).join(" & ");
-        winnerScore.textContent = `Hòa nhau với ${maxScore} điểm`;
-      }
-
-      rankingList.innerHTML = sortedTeams.map((team, index) => {
-        const medals = ["🥇","🥈","🥉","⭐"];
-        return `
-          <div class="rank-row">
-            <div class="rank-left">
-              <span class="rank-medal">${medals[index] || "⭐"}</span>
-              <span>${index + 1}. ${team.name}</span>
-            </div>
-            <span>${team.score} điểm</span>
-          </div>
-        `;
-      }).join("");
-
-      winnerBackdrop.classList.add("show");
-      confettiBurst(120);
-      sound("win");
-    }
-
-    function confettiBurst(count=60){
-      const colors = ["#ff4fc3","#2488ff","#20c997","#ffc857","#9b5de5","#ff4d6d"];
-      for(let i=0;i<count;i++){
-        const c = document.createElement("div");
-        c.className = "confetti";
-        c.style.left = Math.random()*100 + "vw";
-        c.style.top = "-20px";
-        c.style.background = colors[Math.floor(Math.random()*colors.length)];
-        c.style.animationDuration = (.8 + Math.random()*1.2) + "s";
-        c.style.transform = `rotate(${Math.random()*360}deg)`;
-        document.body.appendChild(c);
-        setTimeout(()=>c.remove(),1500);
-      }
-    }
-    function sound(type){
-      if(!$("soundToggle").checked) return;
-      try{
-        const ctx = new (window.AudioContext || window.webkitAudioContext)();
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-        const now = ctx.currentTime;
-        const freq = type==="win" ? 720 : type==="lose" ? 170 : 520;
-        osc.frequency.setValueAtTime(freq, now);
-        if(type==="win") osc.frequency.exponentialRampToValueAtTime(980, now+.16);
-        if(type==="power") osc.frequency.exponentialRampToValueAtTime(880, now+.24);
-        gain.gain.setValueAtTime(.06, now);
-        gain.gain.exponentialRampToValueAtTime(.001, now+.25);
-        osc.start(now);
-        osc.stop(now+.26);
-      }catch(e){}
-    }
-    function showToast(msg){
-      toast.textContent = msg;
-      toast.classList.add("show");
-      setTimeout(()=>toast.classList.remove("show"),1500);
-    }
-    $("closeQuestion").addEventListener("click", closeQuestionModal);
-    $("continueBtn").addEventListener("click", ()=>{
-      closeQuestionModal();
-      if(allQuestionsDone()){
-        setTimeout(showWinnerScreen, 260);
-      }else{
-        nextTeam();
-      }
-    });
-    $("showAnswerBtn").addEventListener("click", showAnswer);
-    $("nextBtn").addEventListener("click", nextTeam);
-    $("powerOk").addEventListener("click", ()=>powerBackdrop.classList.remove("show"));
-    $("closeWinner").addEventListener("click", ()=>winnerBackdrop.classList.remove("show"));
-    $("playAgain").addEventListener("click", ()=>{
-      state.teams.forEach(t=>t.score=0);
-      state.activeTeam=0;
-      state.used=Array(QUESTIONS.length).fill(false);
-      state.hiddenPowerups=buildHiddenPowerups();
-      winnerBackdrop.classList.remove("show");
-      powerBackdrop.classList.remove("show");
-      questionBackdrop.classList.remove("show");
-      localStorage.removeItem("monopolyQuizStateV4");
-      render();
-      showToast("Game mới đã sẵn sàng!");
-    });
-    $("resetBtn").addEventListener("click", ()=>{
-      if(confirm("Reset toàn bộ điểm và mở lại tất cả câu hỏi?")){
-        state.teams.forEach(t=>t.score=0);
-        state.activeTeam=0;
-        state.used=Array(QUESTIONS.length).fill(false);
-        state.hiddenPowerups=buildHiddenPowerups();
-        localStorage.removeItem("monopolyQuizStateV4");
-        winnerBackdrop.classList.remove("show");
-        render();
-        showToast("Đã reset game!");
-      }
-    });
-    document.addEventListener("keydown",(e)=>{
-      if(e.key==="Escape"){
-        questionBackdrop.classList.remove("show");
-        powerBackdrop.classList.remove("show");
-        winnerBackdrop.classList.remove("show");
-      }
-    });
-    load();
-    render();
+    function buildPups() { let a = Array(QUESTIONS.length).fill(null);[...Array(QUESTIONS.length).keys()].sort(() => Math.random() - .5).slice(0, 12).forEach(i => a[i] = PUPS[Math.floor(Math.random() * PUPS.length)]); return a }
+    function save() { localStorage.setItem(KEY, JSON.stringify(s)) }
+    function load() { try { let x = JSON.parse(localStorage.getItem(KEY)); if (x && x.teams && x.pups) { s = x; return } } catch (e) { } s.pups = buildPups() }
+    function render() { renderScores(); renderRace(); renderQ(); save() }
+    function renderScores() { $("scoreboard").innerHTML = s.teams.map((t, i) => `<div class="team ${i === s.active ? 'active' : ''}"><div class="name" contenteditable="true" data-name="${i}">${t.name}</div><div class="score" id="score${i}">${t.score}</div></div>`).join(""); document.querySelectorAll("[data-name]").forEach(el => el.onblur = () => { s.teams[+el.dataset.name].name = el.textContent.trim() || `Team ${+el.dataset.name + 1}`; render() }); $("turn").textContent = "🎯 Lượt: " + s.teams[s.active].name; $("count").textContent = `Câu ${Math.min(s.qi + 1, QUESTIONS.length)} / ${QUESTIONS.length}` }
+    function renderRace() { $("race").innerHTML = '<div class="finish"></div>' + s.teams.map((t, i) => `<div class="lane"><div class="laneLabel">${t.name} ${t.shield ? '🛡️' : ''} ${t.skip ? '🧊' : ''}</div><div class="car" id="car${i}">${t.car}</div></div>`).join(""); s.teams.forEach((t, i) => { let x = 2 + (Math.min(t.pos, MAX) / MAX) * 86; $("car" + i).style.left = x + "%" }); let leader = Math.max(...s.teams.map(t => t.pos)); $("leaderProgress").style.width = (leader / MAX * 100) + "%"; $("questionProgress").style.width = (s.qi / QUESTIONS.length * 100) + "%"; $("leaderText").textContent = `Leader: ${leader}/${MAX}` }
+    function renderQ() { let q = QUESTIONS[s.qi]; s.answered = false; $("result").className = "result"; $("next").disabled = true; $("show").disabled = false; if (!q) { winner(); return } $("question").textContent = q.q; $("answers").innerHTML = "";["A", "B", "C", "D"].forEach((L, idx) => { let b = document.createElement("button"); b.className = "ans"; b.innerHTML = `<span class="letter">${L}</span><span>${q.o[idx]}</span>`; b.onclick = () => check(b, L); $("answers").appendChild(b) }) }
+    function check(btn, L) { if (s.answered) return; s.answered = true; let q = QUESTIONS[s.qi]; document.querySelectorAll(".ans").forEach(b => { b.disabled = true; if (b.querySelector(".letter").textContent === q.a) b.classList.add("correct") }); if (L === q.a) { btn.classList.add("correct"); addScore(s.active, 10); move(s.active, 2); $("result").textContent = `✅ Đúng! ${s.teams[s.active].name} +10 điểm và xe tiến 2 ô.`; $("result").classList.add("show"); animateCar(s.active); confetti(50); sound("win"); setTimeout(reveal, 650) } else { btn.classList.add("wrong"); $("result").textContent = `❌ Sai. Đáp án đúng là ${q.a}. Xe đứng yên.`; $("result").classList.add("show"); sound("lose") } $("next").disabled = false; $("show").disabled = true; renderRace(); if (s.teams.some(t => t.pos >= MAX)) setTimeout(winner, 900); save() }
+    function reveal() { if (!$("power").checked) return; let p = s.pups[s.qi]; if (!p) return; s.pups[s.qi] = null; apply(p); save() }
+    function addScore(i, d) { s.teams[i].score = Math.max(0, s.teams[i].score + d); let el = $("score" + i); if (el) { el.textContent = s.teams[i].score; el.classList.add("bump"); setTimeout(() => el.classList.remove("bump"), 520) } }
+    function move(i, n) { s.teams[i].pos = Math.max(0, Math.min(MAX, s.teams[i].pos + n)); renderRace() }
+    function losePos(i, n) { if (s.teams[i].shield) { s.teams[i].shield = false; return } move(i, -n) }
+    function animateCar(i) { let el = $("car" + i); if (el) { el.classList.add("boost"); setTimeout(() => el.classList.remove("boost"), 700) } }
+    function leaderIndex() { let m = Math.max(...s.teams.map(t => t.pos)); return s.teams.findIndex(t => t.pos === m) }
+    function lastIndex() { let m = Math.min(...s.teams.map(t => t.pos)); return s.teams.findIndex(t => t.pos === m) }
+    function apply(p) { let i = s.active, lead = leaderIndex(), desc = p.d; if (p.e === "move3") move(i, 3); if (p.e === "move2") move(i, 2); if (p.e === "p30") addScore(i, 30); if (p.e === "p15") addScore(i, 15); if (p.e === "banana" && lead !== i) losePos(lead, 2); if (p.e === "oil") { let nxt = (i + 1) % s.teams.length; s.teams[nxt].skip = true; desc = `${s.teams[nxt].name} mất lượt kế tiếp.` } if (p.e === "magnet") { let amount = Math.min(10, s.teams[lead].score); if (lead !== i) { addScore(lead, -amount); addScore(i, amount); desc = `Hút ${amount} điểm từ ${s.teams[lead].name}.` } } if (p.e === "tele") { let m = Math.max(...s.teams.map(t => t.pos)); s.teams[i].pos = m; desc = `${s.teams[i].name} dịch chuyển lên vị trí dẫn đầu!` } if (p.e === "swap" && lead !== i) { let tmp = s.teams[i].pos; s.teams[i].pos = s.teams[lead].pos; s.teams[lead].pos = tmp; desc = `Đổi vị trí với ${s.teams[lead].name}.` } if (p.e === "shield") s.teams[i].shield = true; if (p.e === "boom") s.teams.forEach((t, idx) => { if (idx !== i) losePos(idx, 1) }); if (p.e === "come") { let last = lastIndex(); if (last === i) { move(i, 4); desc = "Đang cuối bảng nên tiến thêm 4 ô!" } else { move(i, 1); desc = "Không cuối bảng nên tiến thêm 1 ô." } } $("powerIcon").textContent = p.i; $("powerName").textContent = p.n; $("powerDesc").textContent = desc; $("powerModal").classList.add("show"); confetti(35); sound("power"); renderScores(); renderRace(); if (s.teams.some(t => t.pos >= MAX)) setTimeout(winner, 900) }
+    function nextQ() { if (!s.answered) return; if (s.teams.some(t => t.pos >= MAX)) { winner(); return } s.qi++; if (s.qi >= QUESTIONS.length) { winner(); save(); return } let n = (s.active + 1) % s.teams.length; let tries = 0; while (s.teams[n].skip && tries < 4) { s.teams[n].skip = false; n = (n + 1) % s.teams.length; tries++ } s.active = n; render() }
+    function showAns() { if (s.answered) return; let q = QUESTIONS[s.qi]; document.querySelectorAll(".ans").forEach(b => { if (b.querySelector(".letter").textContent === q.a) b.classList.add("correct") }); $("result").textContent = "Đáp án đúng là " + q.a; $("result").classList.add("show") }
+    function winner() { let sorted = [...s.teams].sort((a, b) => b.pos - a.pos || b.score - a.score); $("winnerName").textContent = sorted[0].name; $("winnerReason").textContent = `Về xa nhất: ${sorted[0].pos}/${MAX} ô, ${sorted[0].score} điểm.`; $("ranking").innerHTML = sorted.map((t, i) => `<div class="row"><span>${i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : '⭐'} ${t.name}</span><span>${t.pos} ô • ${t.score} điểm</span></div>`).join(""); $("winnerModal").classList.add("show"); confetti(120); sound("win") }
+    function reset() { if (!confirm("Reset cuộc đua?")) return; s = { teams: [{ name: "Team 1", score: 0, pos: 0, car: "🏎️", shield: false, skip: false }, { name: "Team 2", score: 0, pos: 0, car: "🚙", shield: false, skip: false }, { name: "Team 3", score: 0, pos: 0, car: "🚗", shield: false, skip: false }, { name: "Team 4", score: 0, pos: 0, car: "🚕", shield: false, skip: false }], active: 0, qi: 0, answered: false, pups: buildPups() }; localStorage.removeItem(KEY); $("winnerModal").classList.remove("show"); $("powerModal").classList.remove("show"); render() }
+    function confetti(n = 60) { let colors = ["#ff4fc3", "#2488ff", "#20c997", "#ffc857", "#9b5de5", "#ff4d6d"]; for (let i = 0; i < n; i++) { let c = document.createElement("div"); c.className = "confetti"; c.style.left = Math.random() * 100 + "vw"; c.style.top = "-20px"; c.style.background = colors[Math.floor(Math.random() * colors.length)]; c.style.animationDuration = .8 + Math.random() * 1.2 + "s"; document.body.appendChild(c); setTimeout(() => c.remove(), 1500) } }
+    function sound(type) { if (!$("sound").checked) return; try { let ctx = new (window.AudioContext || window.webkitAudioContext)(), o = ctx.createOscillator(), g = ctx.createGain(); o.connect(g); g.connect(ctx.destination); let now = ctx.currentTime, f = type === "win" ? 760 : type === "lose" ? 170 : 560; o.frequency.setValueAtTime(f, now); g.gain.setValueAtTime(.06, now); g.gain.exponentialRampToValueAtTime(.001, now + .25); o.start(now); o.stop(now + .26) } catch (e) { } }
+    $("next").onclick = nextQ; $("show").onclick = showAns; $("reset").onclick = reset; $("powerOk").onclick = () => $("powerModal").classList.remove("show"); $("closeWin").onclick = () => $("winnerModal").classList.remove("show"); $("again").onclick = reset;
+    load(); render();
   </script>
 </body>
+
 </html>
