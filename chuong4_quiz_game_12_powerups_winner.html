@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chương 4 Quiz Game - Cạnh tranh và Độc quyền</title>
+  <style>
+    :root{
+      --yellow:#ffc857;
+      --yellow2:#ffb703;
+      --blue:#2488ff;
+      --blue2:#1d4ed8;
+      --dark:#26344d;
+      --pink:#ff4fc3;
+      --green:#20c997;
+      --red:#ff4d6d;
+      --white:#fff;
+      --shadow: 0 12px 28px rgba(24,40,80,.20);
+      --radius:22px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: "Trebuchet MS", system-ui, -apple-system, Segoe UI, Arial, sans-serif;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(255,255,255,.55) 0 2px, transparent 3px),
+        radial-gradient(circle at 80% 10%, rgba(255,255,255,.35) 0 2px, transparent 3px),
+        linear-gradient(135deg, #f7fbff 0%, #fff7dd 100%);
+      color:var(--dark);
+      overflow-x:hidden;
+    }
+    .topbar{
+      position:sticky; top:0; z-index:5;
+      min-height:120px;
+      padding:14px 20px 18px;
+      background:
+        radial-gradient(circle at 10% 50%, rgba(255,255,255,.22) 0 14px, transparent 15px),
+        radial-gradient(circle at 70% 40%, rgba(255,255,255,.18) 0 10px, transparent 11px),
+        linear-gradient(135deg, var(--yellow), #ffd977);
+      box-shadow: 0 3px 0 rgba(0,0,0,.07);
+    }
+    .title{
+      text-align:center;
+      font-size:clamp(22px,3vw,40px);
+      margin:0 0 12px;
+      font-weight:900;
+      color:#18233a;
+      text-shadow:0 2px 0 rgba(255,255,255,.5);
+    }
+    .scoreboard{
+      display:grid;
+      grid-template-columns: repeat(4, minmax(130px,1fr));
+      gap:12px;
+      max-width:1220px;
+      margin:0 auto;
+    }
+    .team{
+      position:relative;
+      background:rgba(255,255,255,.38);
+      border:2px solid rgba(255,255,255,.4);
+      border-radius:18px;
+      padding:10px 12px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      box-shadow:0 6px 15px rgba(95,63,0,.12);
+      transition:.25s transform,.25s box-shadow,.25s background;
+    }
+    .team.active{
+      transform:translateY(-4px) scale(1.02);
+      background:#fff;
+      box-shadow:0 12px 26px rgba(102,70,0,.25);
+      outline:4px solid rgba(255,79,195,.25);
+    }
+    .team.active .name{
+      background:var(--pink);
+      color:#fff;
+      padding:2px 10px;
+      border-radius:9px;
+    }
+    .name{
+      font-weight:900;
+      font-size:clamp(16px,2vw,25px);
+      min-width:85px;
+    }
+    .score{
+      font-size:clamp(24px,3vw,42px);
+      font-weight:1000;
+      color:#26344d;
+      line-height:1;
+      min-width:56px;
+      text-align:center;
+      transition:.25s transform;
+    }
+    .score.bump{animation:scoreBump .55s ease}
+    @keyframes scoreBump{
+      0%{transform:scale(1)}
+      35%{transform:scale(1.45) rotate(-3deg)}
+      100%{transform:scale(1)}
+    }
+    .score-tools{display:flex; gap:4px; flex-direction:column}
+    .tiny{
+      border:0;
+      width:28px;height:24px;
+      border-radius:9px;
+      background:#fff;
+      color:#26344d;
+      cursor:pointer;
+      font-weight:900;
+      box-shadow:0 2px 6px rgba(0,0,0,.12);
+    }
+    .tiny:hover{transform:scale(1.08)}
+    .toolbar{
+      max-width:1220px;
+      margin:16px auto 0;
+      padding:0 20px;
+      display:flex;
+      gap:10px;
+      align-items:center;
+      justify-content:space-between;
+      flex-wrap:wrap;
+    }
+    .toolbar-left,.toolbar-right{display:flex; gap:10px; align-items:center; flex-wrap:wrap}
+    .pill{
+      border:0;
+      border-radius:999px;
+      padding:11px 16px;
+      font-weight:900;
+      cursor:pointer;
+      color:white;
+      background:linear-gradient(135deg,#20c997,#0aa47c);
+      box-shadow:var(--shadow);
+      transition:.2s transform,.2s filter;
+    }
+    .pill:hover{transform:translateY(-2px); filter:saturate(1.1)}
+    .pill.secondary{background:linear-gradient(135deg,#64748b,#334155)}
+    .pill.danger{background:linear-gradient(135deg,#ff6b6b,#e03131)}
+    .pill.power{background:linear-gradient(135deg,#9b5de5,#f15bb5)}
+    .status{
+      font-weight:900;
+      background:#fff;
+      border-radius:999px;
+      padding:11px 18px;
+      box-shadow:0 7px 16px rgba(0,0,0,.1);
+    }
+    .main{
+      max-width:1220px;
+      margin:16px auto 42px;
+      padding:0 20px;
+    }
+    .board{
+      display:grid;
+      grid-template-columns:repeat(5, minmax(120px,1fr));
+      gap:14px;
+    }
+    .card{
+      position:relative;
+      border:0;
+      min-height:132px;
+      border-radius:22px;
+      cursor:pointer;
+      overflow:hidden;
+      color:#fff;
+      font-size:clamp(38px,7vw,74px);
+      font-weight:1000;
+      text-shadow:0 4px 0 rgba(0,0,0,.09);
+      background:
+        linear-gradient(135deg, rgba(255,255,255,.16), transparent 42%),
+        linear-gradient(155deg, #49a1ff 0%, #2089ff 45%, #245dc0 100%);
+      box-shadow: inset 0 -12px 0 rgba(0,0,0,.08), 0 8px 16px rgba(25,93,190,.24);
+      transition:.2s transform,.2s box-shadow,.2s filter;
+      isolation:isolate;
+    }
+    .card::after{
+      content:"";
+      position:absolute; inset:-40%;
+      background:linear-gradient(115deg, transparent 35%, rgba(255,255,255,.28) 45%, transparent 55%);
+      transform:translateX(-70%) rotate(15deg);
+      transition:.5s;
+      z-index:-1;
+    }
+    .card:hover{
+      transform:translateY(-6px) scale(1.02);
+      box-shadow: inset 0 -12px 0 rgba(0,0,0,.08), 0 16px 28px rgba(25,93,190,.32);
+      filter:saturate(1.15);
+    }
+    .card:hover::after{transform:translateX(70%) rotate(15deg)}
+    .card.used{
+      background:linear-gradient(135deg,#cbd5e1,#64748b);
+      cursor:not-allowed;
+      opacity:.82;
+      transform:none;
+      color:rgba(255,255,255,.75);
+    }
+    .card.used::before{
+      content:"✓";
+      position:absolute;
+      top:12px; right:16px;
+      font-size:28px;
+    }
+    .card.used.power-used::after{
+      content:"⚡";
+      position:absolute;
+      left:14px; top:10px;
+      font-size:26px;
+      z-index:2;
+      background:rgba(255,255,255,.22);
+      width:40px;height:40px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      border-radius:50%;
+      transform:none;
+    }
+    .modal-backdrop{
+      position:fixed; inset:0;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:18px;
+      background:rgba(15,23,42,.62);
+      backdrop-filter:blur(7px);
+      z-index:20;
+    }
+    .modal-backdrop.show{display:flex; animation:fadeIn .18s ease}
+    @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+    .modal{
+      width:min(920px,100%);
+      max-height:92vh;
+      overflow:auto;
+      background:#fff;
+      border-radius:28px;
+      box-shadow:0 28px 70px rgba(0,0,0,.35);
+      padding:24px;
+      transform-origin:center;
+      animation:popIn .22s cubic-bezier(.2,1.15,.35,1.2);
+      border:5px solid rgba(255,200,87,.75);
+    }
+    @keyframes popIn{
+      from{transform:scale(.88) translateY(14px); opacity:.2}
+      to{transform:scale(1) translateY(0); opacity:1}
+    }
+    .modal.shake{animation:shake .35s ease}
+    @keyframes shake{
+      0%,100%{transform:translateX(0)}
+      25%{transform:translateX(-12px)}
+      50%{transform:translateX(12px)}
+      75%{transform:translateX(-8px)}
+    }
+    .modal-head{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      align-items:center;
+      margin-bottom:12px;
+    }
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      border-radius:999px;
+      padding:8px 12px;
+      background:#eef6ff;
+      color:#1453a6;
+      font-weight:900;
+    }
+    .close{
+      border:0; background:#f1f5f9; color:#334155;
+      width:38px;height:38px;border-radius:50%;
+      font-size:22px; font-weight:900; cursor:pointer;
+    }
+    .question{
+      font-size:clamp(22px,3vw,34px);
+      font-weight:1000;
+      line-height:1.25;
+      margin:14px 0 18px;
+    }
+    .answers{
+      display:grid;
+      gap:12px;
+    }
+    .answer{
+      border:3px solid transparent;
+      border-radius:18px;
+      padding:16px 18px;
+      background:#f8fafc;
+      text-align:left;
+      color:#26344d;
+      font-weight:800;
+      font-size:clamp(16px,2vw,21px);
+      cursor:pointer;
+      transition:.15s transform,.15s background,.15s border-color;
+      display:flex;
+      gap:12px;
+      align-items:flex-start;
+    }
+    .answer:hover{transform:translateX(5px); border-color:#a5c9ff; background:#eef6ff}
+    .answer .letter{
+      display:inline-flex; align-items:center; justify-content:center;
+      flex:0 0 36px; height:36px;
+      border-radius:12px;
+      background:linear-gradient(135deg,#2488ff,#1d4ed8);
+      color:#fff; font-weight:1000;
+    }
+    .answer.correct{
+      background:#e7fff4;
+      border-color:#20c997;
+      animation:pulseCorrect .55s ease;
+    }
+    .answer.wrong{
+      background:#fff0f3;
+      border-color:#ff4d6d;
+    }
+    @keyframes pulseCorrect{
+      0%{transform:scale(1)}
+      45%{transform:scale(1.03)}
+      100%{transform:scale(1)}
+    }
+    .result{
+      margin-top:16px;
+      padding:15px;
+      border-radius:18px;
+      background:#fff8db;
+      font-weight:900;
+      display:none;
+    }
+    .result.show{display:block}
+    .actions{
+      display:flex;
+      justify-content:flex-end;
+      gap:10px;
+      margin-top:18px;
+      flex-wrap:wrap;
+    }
+    .bigbtn{
+      border:0;
+      border-radius:16px;
+      padding:14px 18px;
+      font-weight:1000;
+      cursor:pointer;
+      color:#fff;
+      background:linear-gradient(135deg,#2488ff,#1d4ed8);
+      box-shadow:0 8px 16px rgba(29,78,216,.22);
+    }
+    .bigbtn.gray{background:linear-gradient(135deg,#64748b,#334155)}
+    .power-modal{
+      text-align:center;
+      border:5px solid rgba(155,93,229,.35);
+    }
+    .power-icon{
+      font-size:84px;
+      line-height:1;
+      animation:floatIcon 1.2s ease-in-out infinite alternate;
+    }
+    @keyframes floatIcon{to{transform:translateY(-10px) rotate(4deg)}}
+    .power-name{
+      margin:8px 0 8px;
+      font-size:clamp(30px,5vw,54px);
+      font-weight:1000;
+      color:#7c3aed;
+    }
+    .power-desc{
+      font-size:clamp(18px,2.4vw,26px);
+      font-weight:900;
+      color:#26344d;
+      background:#f5f3ff;
+      padding:14px;
+      border-radius:18px;
+    }
+    .winner-modal{
+      text-align:center;
+      border:6px solid rgba(255,200,87,.9);
+      background:
+        radial-gradient(circle at 20% 18%, rgba(255,255,255,.95) 0 58px, transparent 59px),
+        linear-gradient(135deg,#fffdf3,#eef6ff);
+    }
+    .winner-crown{
+      font-size:94px;
+      line-height:1;
+      animation:winnerFloat 1s ease-in-out infinite alternate;
+      filter:drop-shadow(0 8px 12px rgba(0,0,0,.16));
+    }
+    @keyframes winnerFloat{
+      to{transform:translateY(-10px) rotate(-4deg) scale(1.05)}
+    }
+    .winner-title{
+      margin:8px 0 4px;
+      font-size:clamp(34px,5vw,64px);
+      color:#ff8c00;
+      font-weight:1000;
+      text-shadow:0 3px 0 rgba(255,255,255,.9);
+    }
+    .winner-name{
+      display:inline-block;
+      margin:10px 0;
+      padding:10px 22px;
+      border-radius:999px;
+      background:linear-gradient(135deg,#ff4fc3,#9b5de5);
+      color:#fff;
+      font-size:clamp(26px,4vw,48px);
+      font-weight:1000;
+      box-shadow:0 12px 28px rgba(155,93,229,.28);
+    }
+    .winner-score{
+      font-size:clamp(22px,3vw,34px);
+      font-weight:1000;
+      color:#26344d;
+      margin:8px 0 16px;
+    }
+    .ranking{
+      display:grid;
+      gap:10px;
+      max-width:520px;
+      margin:14px auto 0;
+      text-align:left;
+    }
+    .rank-row{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      background:#fff;
+      border-radius:16px;
+      padding:12px 16px;
+      font-weight:900;
+      box-shadow:0 6px 16px rgba(0,0,0,.09);
+    }
+    .rank-row:first-child{
+      background:linear-gradient(135deg,#fff1a8,#ffd166);
+    }
+    .rank-left{
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+    .rank-medal{
+      width:34px;
+      height:34px;
+      border-radius:50%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:#eef6ff;
+    }
+
+    .toast{
+      position:fixed; left:50%; bottom:22px;
+      transform:translateX(-50%) translateY(100px);
+      z-index:40;
+      background:#18233a; color:#fff;
+      padding:14px 18px;
+      border-radius:999px;
+      box-shadow:var(--shadow);
+      font-weight:900;
+      transition:.25s;
+      opacity:0;
+    }
+    .toast.show{transform:translateX(-50%) translateY(0); opacity:1}
+    .confetti{
+      position:fixed;
+      width:10px;height:16px;
+      pointer-events:none;
+      z-index:50;
+      border-radius:3px;
+      animation:fall 1.3s linear forwards;
+    }
+    @keyframes fall{
+      to{transform:translateY(105vh) rotate(720deg); opacity:0}
+    }
+    .mini-help{
+      max-width:1220px;
+      margin:0 auto 14px;
+      padding:0 20px;
+      font-weight:800;
+      color:#53627a;
+    }
+    .switch{
+      display:inline-flex; align-items:center; gap:9px;
+      font-weight:900; background:#fff; border-radius:999px; padding:8px 12px;
+      box-shadow:0 5px 14px rgba(0,0,0,.1)
+    }
+    .switch input{accent-color:#9b5de5; width:18px; height:18px}
+    @media (max-width:850px){
+      .scoreboard{grid-template-columns:repeat(2,1fr)}
+      .board{grid-template-columns:repeat(4,1fr)}
+      .card{min-height:105px}
+    }
+    @media (max-width:560px){
+      .topbar{min-height:auto}
+      .scoreboard{grid-template-columns:1fr}
+      .board{grid-template-columns:repeat(2,1fr)}
+      .card{min-height:96px}
+      .toolbar{padding:0 12px}
+      .main{padding:0 12px}
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <h1 class="title">🎮 Chương 4: Cạnh tranh & Độc quyền</h1>
+    <section class="scoreboard" id="scoreboard"></section>
+  </header>
+
+  <div class="toolbar">
+    <div class="toolbar-left">
+      <span class="status" id="turnStatus">Lượt: Team 1</span>
+      <label class="switch"><input type="checkbox" id="powerToggle" checked /> Power-ups ẩn</label>
+      <label class="switch"><input type="checkbox" id="soundToggle" checked /> Âm thanh</label>
+    </div>
+    <div class="toolbar-right">
+      <button class="pill secondary" id="nextBtn">⏭ Đổi lượt</button>
+      <button class="pill danger" id="resetBtn">🔄 Reset game</button>
+    </div>
+  </div>
+
+  <p class="mini-help">Cách chơi: Team đang tới lượt chọn ô → chọn đáp án. Đúng +10 điểm. Sau câu đúng có thể xuất hiện power-up cộng/trừ/đổi điểm.</p>
+
+  <main class="main">
+    <section class="board" id="board"></section>
+  </main>
+
+  <div class="modal-backdrop" id="questionBackdrop">
+    <div class="modal" id="questionModal">
+      <div class="modal-head">
+        <span class="badge" id="questionBadge">Câu 1 • Team 1</span>
+        <button class="close" id="closeQuestion">×</button>
+      </div>
+      <div class="question" id="questionText"></div>
+      <div class="answers" id="answers"></div>
+      <div class="result" id="result"></div>
+      <div class="actions">
+        <button class="bigbtn gray" id="showAnswerBtn">👀 Hiện đáp án</button>
+        <button class="bigbtn" id="continueBtn" style="display:none">Tiếp tục</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="powerBackdrop">
+    <div class="modal power-modal">
+      <div class="power-icon" id="powerIcon">🎁</div>
+      <div class="power-name" id="powerName">Gift</div>
+      <div class="power-desc" id="powerDesc">Power-up ẩn trong ô vừa chọn!</div>
+      <div class="actions" style="justify-content:center">
+        <button class="bigbtn" id="powerOk">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="winnerBackdrop">
+    <div class="modal winner-modal">
+      <div class="winner-crown">🏆</div>
+      <div class="winner-title">Game Over!</div>
+      <div class="winner-name" id="winnerName">Team thắng</div>
+      <div class="winner-score" id="winnerScore">0 điểm</div>
+      <div class="ranking" id="rankingList"></div>
+      <div class="actions" style="justify-content:center">
+        <button class="bigbtn gray" id="closeWinner">Xem lại bảng</button>
+        <button class="bigbtn" id="playAgain">Chơi lại</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast">Saved</div>
+
+  <script>
+    const QUESTIONS = [
+      {q:"Độc quyền là gì?", a:"B", options:{A:"Sự cạnh tranh hoàn toàn tự do giữa các doanh nghiệp nhỏ", B:"Sự liên minh giữa các doanh nghiệp lớn có khả năng thâu tóm sản xuất và tiêu thụ hàng hóa", C:"Sự can thiệp trực tiếp của người tiêu dùng vào thị trường", D:"Sự phân chia đều lợi nhuận giữa các doanh nghiệp"}},
+      {q:"Mục đích chủ yếu của độc quyền là gì?", a:"C", options:{A:"Giảm giá hàng hóa xuống thấp nhất", B:"Xóa bỏ hoàn toàn sản xuất hàng hóa", C:"Định ra giá cả độc quyền nhằm thu lợi nhuận độc quyền cao", D:"Làm cho mọi doanh nghiệp có quy mô bằng nhau"}},
+      {q:"Một nguyên nhân hình thành độc quyền là gì?", a:"A", options:{A:"Sự phát triển của lực lượng sản xuất", B:"Sự biến mất của khoa học - kỹ thuật", C:"Sự giảm quy mô của các xí nghiệp lớn", D:"Sự xóa bỏ hoàn toàn thị trường"}},
+      {q:"Khi khoa học - kỹ thuật phát triển, điều gì có thể xảy ra?", a:"A", options:{A:"Các xí nghiệp lớn có điều kiện hình thành", B:"Sản xuất chỉ còn ở quy mô nhỏ", C:"Cạnh tranh hoàn toàn biến mất ngay lập tức", D:"Người tiêu dùng trực tiếp quản lý doanh nghiệp"}},
+      {q:"Vì sao cạnh tranh có thể dẫn đến độc quyền?", a:"B", options:{A:"Vì cạnh tranh làm mọi doanh nghiệp mạnh như nhau", B:"Vì doanh nghiệp nhỏ có thể hợp lại hoặc bị loại bỏ", C:"Vì cạnh tranh làm giá cả luôn cố định", D:"Vì cạnh tranh không ảnh hưởng đến quy mô doanh nghiệp"}},
+      {q:"Khủng hoảng kinh tế góp phần hình thành độc quyền như thế nào?", a:"B", options:{A:"Làm cho các doanh nghiệp nhỏ luôn phát triển mạnh hơn", B:"Thúc đẩy quá trình tập trung sản xuất", C:"Làm mất hoàn toàn nhu cầu tiêu dùng", D:"Ngăn chặn mọi hình thức liên minh doanh nghiệp"}},
+      {q:"Độc quyền nhà nước là gì?", a:"B", options:{A:"Nhà nước không tham gia bất kỳ hoạt động kinh tế nào", B:"Nhà nước nắm giữ vị thế độc quyền dựa trên sức mạnh của các tổ chức độc quyền trong lĩnh vực then chốt", C:"Người tiêu dùng quyết định toàn bộ giá cả thị trường", D:"Doanh nghiệp nhỏ kiểm soát toàn bộ nền kinh tế"}},
+      {q:"Nguyên nhân thứ nhất hình thành độc quyền nhà nước là gì?", a:"A", options:{A:"Tích tụ và tập trung tư bản ngày càng lớn", B:"Doanh nghiệp nhỏ ngày càng tách rời nhau", C:"Sản xuất ngày càng phân tán", D:"Nhà nước ngừng điều tiết xã hội"}},
+      {q:"Khi phân công lao động xã hội phát triển, các ngành mới thường có đặc điểm gì?", a:"C", options:{A:"Không cần vốn đầu tư", B:"Thu hồi vốn rất nhanh và lợi nhuận rất cao ngay lập tức", C:"Đầu tư lớn, thu hồi vốn chậm, ít lợi nhuận", D:"Không cần sự hỗ trợ từ nhà nước"}},
+      {q:"Một nguyên nhân hình thành độc quyền nhà nước là để làm gì trước mâu thuẫn xã hội?", a:"B", options:{A:"Xóa bỏ hoàn toàn giai cấp", B:"Xoa dịu mâu thuẫn giữa tư sản, vô sản và nhân dân lao động", C:"Làm cho mâu thuẫn xã hội gay gắt hơn", D:"Loại bỏ toàn bộ hoạt động kinh tế đối ngoại"}},
+      {q:"Trong quan hệ kinh tế đối ngoại, nhà nước tư bản can thiệp nhằm mục đích gì?", a:"A", options:{A:"Bảo hộ tư bản và tạo môi trường quốc tế thuận lợi", B:"Cấm mọi hình thức đầu tư ra nước ngoài", C:"Xóa bỏ toàn bộ thương mại quốc tế", D:"Làm suy yếu các tổ chức độc quyền trong nước"}},
+      {q:"Bản chất của chủ nghĩa tư bản độc quyền nhà nước là gì?", a:"B", options:{A:"Sự tách rời hoàn toàn giữa nhà nước và tổ chức độc quyền tư nhân", B:"Sự kết hợp giữa tổ chức độc quyền tư nhân và nhà nước tư bản", C:"Sự biến mất của chủ nghĩa tư bản", D:"Sự kiểm soát nền kinh tế bởi người lao động"}},
+      {q:"Độc quyền có tác động tích cực nào?", a:"A", options:{A:"Tạo khả năng nghiên cứu và phát triển khoa học - kỹ thuật", B:"Luôn làm giảm năng suất lao động", C:"Luôn làm mất hoàn toàn cạnh tranh", D:"Làm cho nền kinh tế ngừng phát triển"}},
+      {q:"Đâu là tác động tiêu cực của độc quyền?", a:"C", options:{A:"Góp phần tăng năng suất lao động", B:"Tạo điều kiện nghiên cứu khoa học - kỹ thuật", C:"Gây thiệt hại cho người tiêu dùng và xã hội", D:"Nâng cao năng lực cạnh tranh trong mọi trường hợp"}},
+      {q:"Trong trạng thái độc quyền, cạnh tranh có còn tồn tại không?", a:"B", options:{A:"Không, độc quyền xóa bỏ hoàn toàn cạnh tranh", B:"Có, vẫn tồn tại cạnh tranh giữa tổ chức độc quyền với xí nghiệp ngoài độc quyền, giữa các tổ chức độc quyền và trong nội bộ tổ chức độc quyền", C:"Không, vì mọi doanh nghiệp đều thuộc một chủ sở hữu", D:"Chỉ còn cạnh tranh giữa người tiêu dùng với nhau"}},
+      {q:"Các hình thức tổ chức độc quyền gồm những hình thức nào?", a:"A", options:{A:"Cartel, syndicate, trust, consortium, conglomerate", B:"Công ty nhỏ, hộ gia đình, hợp tác xã, cá nhân", C:"Chợ truyền thống, siêu thị, cửa hàng tiện lợi", D:"Thuế, ngân sách, tín dụng, tiền tệ"}},
+      {q:"Cartel là gì?", a:"A", options:{A:"Liên minh độc quyền về giá cả, phân chia thị trường, số lượng hàng hóa sản xuất", B:"Hình thức độc quyền thống nhất cả sản xuất và lưu thông", C:"Tổ chức độc quyền do một ngân hàng đứng đầu toàn bộ nền kinh tế", D:"Doanh nghiệp nhà nước trong lĩnh vực hạ tầng"}},
+      {q:"Syndicate có đặc điểm gì?", a:"B", options:{A:"Doanh nghiệp mất độc lập cả sản xuất và lưu thông", B:"Mọi việc mua bán do một ban quản trị đảm nhiệm, các doanh nghiệp vẫn độc lập về sản xuất nhưng mất độc lập về lưu thông", C:"Chỉ là liên minh tạm thời giữa người tiêu dùng", D:"Không liên quan đến việc mua bán hàng hóa"}},
+      {q:"Trust là gì?", a:"A", options:{A:"Hình thức độc quyền thống nhất cả sản xuất và lưu thông dưới sự quản lý của hội đồng quản trị", B:"Hình thức độc quyền chỉ liên minh về giá cả", C:"Hình thức độc quyền chỉ tồn tại trong nông nghiệp", D:"Hình thức sở hữu nhà nước trong ngành hạ tầng"}},
+      {q:"Theo V.I. Lênin, tư bản tài chính là gì?", a:"B", options:{A:"Sự tách rời giữa tư bản ngân hàng và tư bản công nghiệp", B:"Kết quả của sự hợp nhất giữa tư bản ngân hàng của một số ít ngân hàng độc quyền lớn nhất với tư bản của các liên minh độc quyền công nghiệp", C:"Toàn bộ tiền tiết kiệm của người tiêu dùng", D:"Vốn đầu tư nhỏ của các hộ gia đình"}}
+    ];
+
+    const POWERUPS = [
+      {name:"Fairy", icon:"🧚", effect:"take", desc:"Mất {x} điểm"},
+      {name:"Thief", icon:"🦝", effect:"steal", desc:"Cướp {x} điểm từ team cao nhất"},
+      {name:"Rocket", icon:"🚀", effect:"first", desc:"Bay lên hạng nhất"},
+      {name:"Virus", icon:"🦠", effect:"reset", desc:"Reset toàn bộ điểm"},
+      {name:"Shark", icon:"🦈", effect:"othersLose", desc:"Team khác mất {x} điểm"},
+      {name:"Magnet", icon:"🧲", effect:"magnet", desc:"Hút {x} điểm từ team cao nhất"},
+      {name:"Lifesaver", icon:"🛟", effect:"give", desc:"Được cộng {x} điểm"},
+      {name:"Seesaw", icon:"⚖️", effect:"swap", desc:"Đổi điểm với team ngẫu nhiên"},
+      {name:"Gold", icon:"🥇", effect:"gold", desc:"Được cộng 50 điểm"},
+      {name:"Boom", icon:"💥", effect:"boom", desc:"Mất 50 điểm"},
+      {name:"Gift", icon:"🎁", effect:"gift", desc:"Được cộng {x} điểm"},
+      {name:"Baam", icon:"💜", effect:"baam", desc:"Mất {x} điểm"}
+    ];
+
+    const state = {
+      teams:[
+        {name:"Team 1", score:0},
+        {name:"Team 2", score:0},
+        {name:"Team 3", score:0},
+        {name:"Team 4", score:0}
+      ],
+      activeTeam:0,
+      used:Array(QUESTIONS.length).fill(false),
+      hiddenPowerups:[],
+      currentQuestion:null,
+      answered:false
+    };
+
+    const $ = (id)=>document.getElementById(id);
+
+    const scoreboard = $("scoreboard");
+    const board = $("board");
+    const turnStatus = $("turnStatus");
+    const questionBackdrop = $("questionBackdrop");
+    const questionModal = $("questionModal");
+    const questionBadge = $("questionBadge");
+    const questionText = $("questionText");
+    const answers = $("answers");
+    const result = $("result");
+    const showAnswerBtn = $("showAnswerBtn");
+    const continueBtn = $("continueBtn");
+    const powerBackdrop = $("powerBackdrop");
+    const powerIcon = $("powerIcon");
+    const powerName = $("powerName");
+    const powerDesc = $("powerDesc");
+    const winnerBackdrop = $("winnerBackdrop");
+    const winnerName = $("winnerName");
+    const winnerScore = $("winnerScore");
+    const rankingList = $("rankingList");
+    const toast = $("toast");
+
+    function save(){
+      localStorage.setItem("monopolyQuizStateV4", JSON.stringify({
+        teams:state.teams,
+        activeTeam:state.activeTeam,
+        used:state.used,
+        hiddenPowerups:state.hiddenPowerups
+      }));
+    }
+
+    function buildHiddenPowerups(){
+      // Power-ups được rải sẵn trong các ô, nhưng người chơi không thấy trước.
+      // null = ô bình thường. Chỉ 12/20 ô có power-up, không phải ô nào cũng có.
+      const slots = Array(QUESTIONS.length).fill(null);
+      const powerIndexes = [...Array(QUESTIONS.length).keys()]
+        .sort(() => Math.random() - 0.5)
+        .slice(0, 12);
+
+      powerIndexes.forEach((cardIndex) => {
+        slots[cardIndex] = POWERUPS[Math.floor(Math.random() * POWERUPS.length)];
+      });
+
+      return slots;
+    }
+
+    function load(){
+      try{
+        const raw = localStorage.getItem("monopolyQuizStateV4");
+        if(raw){
+          const data = JSON.parse(raw);
+          if(data.teams && data.used){
+            state.teams = data.teams;
+            state.activeTeam = data.activeTeam || 0;
+            state.used = data.used;
+            state.hiddenPowerups = Array.isArray(data.hiddenPowerups) && data.hiddenPowerups.length === QUESTIONS.length
+              ? data.hiddenPowerups
+              : buildHiddenPowerups();
+            return;
+          }
+        }
+      }catch(e){}
+
+      state.hiddenPowerups = buildHiddenPowerups();
+    }
+    function render(){
+      renderScoreboard();
+      renderBoard();
+      turnStatus.textContent = "Lượt: " + state.teams[state.activeTeam].name;
+      save();
+    }
+    function renderScoreboard(){
+      scoreboard.innerHTML = "";
+      state.teams.forEach((team,i)=>{
+        const el = document.createElement("div");
+        el.className = "team" + (i===state.activeTeam ? " active":"");
+        el.innerHTML = `
+          <div>
+            <div class="name" contenteditable="true" data-index="${i}">${team.name}</div>
+          </div>
+          <div class="score" id="score-${i}">${team.score}</div>
+          <div class="score-tools">
+            <button class="tiny" data-score="${i}" data-delta="10">+</button>
+            <button class="tiny" data-score="${i}" data-delta="-10">−</button>
+          </div>
+        `;
+        scoreboard.appendChild(el);
+      });
+      document.querySelectorAll("[contenteditable][data-index]").forEach(el=>{
+        el.addEventListener("blur", ()=>{
+          const i = Number(el.dataset.index);
+          state.teams[i].name = el.textContent.trim() || `Team ${i+1}`;
+          render();
+        });
+      });
+      document.querySelectorAll("[data-score]").forEach(btn=>{
+        btn.addEventListener("click", ()=>{
+          addScore(Number(btn.dataset.score), Number(btn.dataset.delta));
+          render();
+        });
+      });
+    }
+    function renderBoard(){
+      board.innerHTML = "";
+      QUESTIONS.forEach((q,i)=>{
+        const btn = document.createElement("button");
+        btn.className = "card" + (state.used[i] ? " used":"") + (state.used[i] && state.hiddenPowerups[i] ? " power-used":"");
+        btn.textContent = i+1;
+        btn.disabled = state.used[i];
+        btn.addEventListener("click", ()=>openQuestion(i));
+        board.appendChild(btn);
+      });
+    }
+    function openQuestion(index){
+      state.currentQuestion = index;
+      state.answered = false;
+      const q = QUESTIONS[index];
+      questionBadge.textContent = `Câu ${index+1} • ${state.teams[state.activeTeam].name}`;
+      questionText.textContent = q.q;
+      answers.innerHTML = "";
+      result.className = "result";
+      result.textContent = "";
+      showAnswerBtn.style.display = "inline-block";
+      continueBtn.style.display = "none";
+      Object.entries(q.options).forEach(([letter,text])=>{
+        const btn = document.createElement("button");
+        btn.className = "answer";
+        btn.innerHTML = `<span class="letter">${letter}</span><span>${text}</span>`;
+        btn.addEventListener("click", ()=>checkAnswer(btn, letter));
+        answers.appendChild(btn);
+      });
+      questionBackdrop.classList.add("show");
+    }
+    function checkAnswer(btn, letter){
+      if(state.answered) return;
+      state.answered = true;
+      const q = QUESTIONS[state.currentQuestion];
+      const buttons = [...document.querySelectorAll(".answer")];
+      buttons.forEach(b=>b.disabled = true);
+      buttons.forEach(b=>{
+        const l = b.querySelector(".letter").textContent;
+        if(l === q.a) b.classList.add("correct");
+      });
+      if(letter === q.a){
+        btn.classList.add("correct");
+        state.used[state.currentQuestion] = true;
+        addScore(state.activeTeam, 10);
+        result.textContent = `✅ Chính xác! ${state.teams[state.activeTeam].name} +10 điểm.`;
+        result.classList.add("show");
+        confettiBurst();
+        sound("win");
+        setTimeout(()=>{
+          revealCardPowerup();
+        },650);
+      }else{
+        btn.classList.add("wrong");
+        state.used[state.currentQuestion] = true;
+        result.textContent = `❌ Sai rồi. Đáp án đúng là ${q.a}. Không được kích hoạt power-up.`;
+        result.classList.add("show");
+        questionModal.classList.add("shake");
+        sound("lose");
+        setTimeout(()=>questionModal.classList.remove("shake"),400);
+      }
+      showAnswerBtn.style.display = "none";
+      continueBtn.style.display = "inline-block";
+      render();
+    }
+    function showAnswer(){
+      if(state.answered) return;
+      const q = QUESTIONS[state.currentQuestion];
+      [...document.querySelectorAll(".answer")].forEach(b=>{
+        const l = b.querySelector(".letter").textContent;
+        if(l === q.a) b.classList.add("correct");
+      });
+      result.textContent = `Đáp án đúng là ${q.a}.`;
+      result.classList.add("show");
+    }
+    function addScore(teamIndex, delta){
+      state.teams[teamIndex].score = Math.max(0, state.teams[teamIndex].score + delta);
+      renderScoreboard();
+      const scoreEl = $(`score-${teamIndex}`);
+      if(scoreEl){
+        scoreEl.classList.add("bump");
+        setTimeout(()=>scoreEl.classList.remove("bump"),560);
+      }
+      save();
+    }
+    function setScore(teamIndex, value){
+      state.teams[teamIndex].score = Math.max(0, value);
+      renderScoreboard();
+      const scoreEl = $(`score-${teamIndex}`);
+      if(scoreEl) scoreEl.classList.add("bump");
+      setTimeout(()=>scoreEl && scoreEl.classList.remove("bump"),560);
+      save();
+    }
+    function nextTeam(){
+      state.activeTeam = (state.activeTeam + 1) % state.teams.length;
+      render();
+    }
+    function closeQuestionModal(){
+      questionBackdrop.classList.remove("show");
+    }
+    function randomPoint(){
+      return [5,10,15,20,25][Math.floor(Math.random()*5)];
+    }
+    function otherTeamIndexes(){
+      return state.teams.map((_,i)=>i).filter(i=>i!==state.activeTeam);
+    }
+    function highestOtherTeam(){
+      const others = otherTeamIndexes();
+      return others.sort((a,b)=>state.teams[b].score - state.teams[a].score)[0];
+    }
+    function randomOtherTeam(){
+      const others = otherTeamIndexes();
+      return others[Math.floor(Math.random()*others.length)];
+    }
+    function revealCardPowerup(){
+      if(!$("powerToggle").checked) return;
+      const cardIndex = state.currentQuestion;
+      const p = state.hiddenPowerups[cardIndex];
+      if(!p) return;
+
+      // Chỉ gọi hàm này khi trả lời đúng. Mỗi ô chỉ dùng power-up một lần.
+      state.hiddenPowerups[cardIndex] = null;
+      triggerPowerup(p);
+    }
+
+    function triggerPowerup(p){
+      const x = randomPoint();
+      const t = state.activeTeam;
+      let desc = p.desc.replace("{x}", x);
+      let target;
+      switch(p.effect){
+        case "take":
+          addScore(t, -x);
+          break;
+        case "give":
+        case "gift":
+          addScore(t, x);
+          break;
+        case "gold":
+          addScore(t, 50);
+          break;
+        case "boom":
+          addScore(t, -50);
+          break;
+        case "baam":
+          addScore(t, -x);
+          break;
+        case "steal":
+        case "magnet":
+          target = highestOtherTeam();
+          const stealAmount = Math.min(x, state.teams[target].score);
+          addScore(target, -stealAmount);
+          addScore(t, stealAmount);
+          desc = `${state.teams[t].name} lấy ${stealAmount} điểm từ ${state.teams[target].name}`;
+          break;
+        case "othersLose":
+          otherTeamIndexes().forEach(i=>addScore(i, -x));
+          break;
+        case "first":
+          const max = Math.max(...state.teams.map(tm=>tm.score));
+          setScore(t, max + 10);
+          desc = `${state.teams[t].name} bay lên hạng nhất!`;
+          break;
+        case "reset":
+          state.teams.forEach((_,i)=>setScore(i,0));
+          break;
+        case "swap":
+          target = randomOtherTeam();
+          const temp = state.teams[t].score;
+          setScore(t, state.teams[target].score);
+          setScore(target, temp);
+          desc = `${state.teams[t].name} đổi điểm với ${state.teams[target].name}`;
+          break;
+      }
+      powerIcon.textContent = p.icon;
+      powerName.textContent = p.name;
+      powerDesc.textContent = desc;
+      powerBackdrop.classList.add("show");
+      confettiBurst(24);
+      sound("power");
+      render();
+    }
+    function allQuestionsDone(){
+      return state.used.every(Boolean);
+    }
+
+    function showWinnerScreen(){
+      const maxScore = Math.max(...state.teams.map(team => team.score));
+      const winners = state.teams.filter(team => team.score === maxScore);
+      const sortedTeams = [...state.teams].sort((a,b) => b.score - a.score);
+
+      if(winners.length === 1){
+        winnerName.textContent = winners[0].name;
+        winnerScore.textContent = `${winners[0].score} điểm`;
+      }else{
+        winnerName.textContent = winners.map(team => team.name).join(" & ");
+        winnerScore.textContent = `Hòa nhau với ${maxScore} điểm`;
+      }
+
+      rankingList.innerHTML = sortedTeams.map((team, index) => {
+        const medals = ["🥇","🥈","🥉","⭐"];
+        return `
+          <div class="rank-row">
+            <div class="rank-left">
+              <span class="rank-medal">${medals[index] || "⭐"}</span>
+              <span>${index + 1}. ${team.name}</span>
+            </div>
+            <span>${team.score} điểm</span>
+          </div>
+        `;
+      }).join("");
+
+      winnerBackdrop.classList.add("show");
+      confettiBurst(120);
+      sound("win");
+    }
+
+    function confettiBurst(count=60){
+      const colors = ["#ff4fc3","#2488ff","#20c997","#ffc857","#9b5de5","#ff4d6d"];
+      for(let i=0;i<count;i++){
+        const c = document.createElement("div");
+        c.className = "confetti";
+        c.style.left = Math.random()*100 + "vw";
+        c.style.top = "-20px";
+        c.style.background = colors[Math.floor(Math.random()*colors.length)];
+        c.style.animationDuration = (.8 + Math.random()*1.2) + "s";
+        c.style.transform = `rotate(${Math.random()*360}deg)`;
+        document.body.appendChild(c);
+        setTimeout(()=>c.remove(),1500);
+      }
+    }
+    function sound(type){
+      if(!$("soundToggle").checked) return;
+      try{
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        const now = ctx.currentTime;
+        const freq = type==="win" ? 720 : type==="lose" ? 170 : 520;
+        osc.frequency.setValueAtTime(freq, now);
+        if(type==="win") osc.frequency.exponentialRampToValueAtTime(980, now+.16);
+        if(type==="power") osc.frequency.exponentialRampToValueAtTime(880, now+.24);
+        gain.gain.setValueAtTime(.06, now);
+        gain.gain.exponentialRampToValueAtTime(.001, now+.25);
+        osc.start(now);
+        osc.stop(now+.26);
+      }catch(e){}
+    }
+    function showToast(msg){
+      toast.textContent = msg;
+      toast.classList.add("show");
+      setTimeout(()=>toast.classList.remove("show"),1500);
+    }
+    $("closeQuestion").addEventListener("click", closeQuestionModal);
+    $("continueBtn").addEventListener("click", ()=>{
+      closeQuestionModal();
+      if(allQuestionsDone()){
+        setTimeout(showWinnerScreen, 260);
+      }else{
+        nextTeam();
+      }
+    });
+    $("showAnswerBtn").addEventListener("click", showAnswer);
+    $("nextBtn").addEventListener("click", nextTeam);
+    $("powerOk").addEventListener("click", ()=>powerBackdrop.classList.remove("show"));
+    $("closeWinner").addEventListener("click", ()=>winnerBackdrop.classList.remove("show"));
+    $("playAgain").addEventListener("click", ()=>{
+      state.teams.forEach(t=>t.score=0);
+      state.activeTeam=0;
+      state.used=Array(QUESTIONS.length).fill(false);
+      state.hiddenPowerups=buildHiddenPowerups();
+      winnerBackdrop.classList.remove("show");
+      powerBackdrop.classList.remove("show");
+      questionBackdrop.classList.remove("show");
+      localStorage.removeItem("monopolyQuizStateV4");
+      render();
+      showToast("Game mới đã sẵn sàng!");
+    });
+    $("resetBtn").addEventListener("click", ()=>{
+      if(confirm("Reset toàn bộ điểm và mở lại tất cả câu hỏi?")){
+        state.teams.forEach(t=>t.score=0);
+        state.activeTeam=0;
+        state.used=Array(QUESTIONS.length).fill(false);
+        state.hiddenPowerups=buildHiddenPowerups();
+        localStorage.removeItem("monopolyQuizStateV4");
+        winnerBackdrop.classList.remove("show");
+        render();
+        showToast("Đã reset game!");
+      }
+    });
+    document.addEventListener("keydown",(e)=>{
+      if(e.key==="Escape"){
+        questionBackdrop.classList.remove("show");
+        powerBackdrop.classList.remove("show");
+        winnerBackdrop.classList.remove("show");
+      }
+    });
+    load();
+    render();
+  </script>
+</body>
+</html>
