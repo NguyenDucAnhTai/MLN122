@@ -6,6 +6,10 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Đua xe chọn số - Chương 4</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800;900&display=swap"
+    rel="stylesheet">
   <style>
     * {
       box-sizing: border-box
@@ -14,13 +18,16 @@
     body {
       margin: 0;
       min-height: 100vh;
-      font-family: "Segoe UI", Arial, Tahoma, sans-serif;
+      font-family: "Be Vietnam Pro", "Segoe UI", Arial, Tahoma, sans-serif;
       color: #1f2a44;
       background:
         radial-gradient(circle at 8% 15%, #ffffff88 0 14px, transparent 15px),
         radial-gradient(circle at 85% 12%, #ffffff77 0 18px, transparent 19px),
         linear-gradient(135deg, #dff6ff, #fff4ca 48%, #ffe1f3);
       overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
     }
 
     header {
@@ -36,13 +43,13 @@
       text-align: center;
       margin: 0;
       font-size: clamp(24px, 4vw, 47px);
-      font-weight: 1000;
+      font-weight: 800;
       text-shadow: 0 3px 0 #ffffff88
     }
 
     .sub {
       text-align: center;
-      font-weight: 850;
+      font-weight: 700;
       color: #475569;
       margin: 6px 0 0
     }
@@ -80,7 +87,7 @@
       min-width: 105px;
       text-align: center;
       font-size: clamp(16px, 2vw, 25px);
-      font-weight: 1000
+      font-weight: 800
     }
 
     .team:nth-child(1) .name {
@@ -101,7 +108,7 @@
 
     .score {
       font-size: clamp(25px, 3vw, 42px);
-      font-weight: 1000;
+      font-weight: 800;
       line-height: 1
     }
 
@@ -141,7 +148,7 @@
       background: #fff;
       border-radius: 999px;
       padding: 10px 16px;
-      font-weight: 1000;
+      font-weight: 800;
       box-shadow: 0 6px 14px #0001
     }
 
@@ -162,7 +169,7 @@
 
     .finish {
       position: absolute;
-      right: 5%;
+      left: 5%;
       top: 0;
       bottom: 0;
       width: 38px;
@@ -184,11 +191,11 @@
 
     .laneLabel {
       position: absolute;
-      left: 10px;
+      right: 10px;
       top: 9px;
       z-index: 2;
       color: #fff;
-      font-weight: 1000;
+      font-weight: 800;
       background: #00000055;
       padding: 5px 10px;
       border-radius: 999px
@@ -210,7 +217,7 @@
 
     @keyframes boost {
       40% {
-        transform: scale(1.25) rotate(-8deg)
+        transform: scaleX(-1) scale(1.25) rotate(8deg)
       }
     }
 
@@ -241,7 +248,7 @@
       background: white;
       border-radius: 999px;
       padding: 8px 14px;
-      font-weight: 1000;
+      font-weight: 800;
       box-shadow: 0 6px 14px #0001;
       min-width: 135px;
       text-align: center
@@ -283,7 +290,7 @@
       cursor: pointer;
       color: #fff;
       font-size: clamp(32px, 5vw, 54px);
-      font-weight: 1000;
+      font-weight: 800;
       background: linear-gradient(155deg, #49a1ff, #2089ff 45%, #245dc0);
       box-shadow: inset 0 -9px 0 #0002, 0 8px 16px #1d4ed833;
       transition: .18s;
@@ -347,7 +354,7 @@
       border-radius: 16px;
       padding: 13px 17px;
       color: white;
-      font-weight: 1000;
+      font-weight: 800;
       cursor: pointer;
       box-shadow: 0 9px 18px #0002;
       background: linear-gradient(135deg, #2488ff, #1d4ed8)
@@ -370,7 +377,7 @@
       background: white;
       border-radius: 99px;
       padding: 9px 12px;
-      font-weight: 900;
+      font-weight: 800;
       box-shadow: 0 6px 14px #0001
     }
 
@@ -426,7 +433,7 @@
       color: #1d4ed8;
       border-radius: 999px;
       padding: 9px 14px;
-      font-weight: 1000
+      font-weight: 800
     }
 
     .close {
@@ -435,17 +442,18 @@
       border: 0;
       border-radius: 50%;
       font-size: 24px;
-      font-weight: 1000;
+      font-weight: 800;
       background: #f1f5f9;
       cursor: pointer
     }
 
     .question {
       font-size: clamp(23px, 3vw, 36px);
-      line-height: 1.35;
-      font-weight: 1000;
+      line-height: 1.45;
+      font-weight: 800;
       margin: 0 0 16px;
-      text-align: left
+      text-align: left;
+      letter-spacing: -0.015em
     }
 
     .answers {
@@ -465,8 +473,9 @@
       gap: 12px;
       text-align: left;
       font-size: clamp(15px, 1.7vw, 20px);
-      line-height: 1.35;
-      font-weight: 850;
+      line-height: 1.45;
+      font-weight: 700;
+      letter-spacing: -0.01em;
       cursor: pointer;
       transition: .15s
     }
@@ -486,7 +495,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-weight: 1000
+      font-weight: 800
     }
 
     .ans.correct {
@@ -523,7 +532,7 @@
       padding: 13px 15px;
       border-radius: 17px;
       background: #fff8db;
-      font-weight: 1000;
+      font-weight: 800;
       line-height: 1.35;
       text-align: left
     }
@@ -545,14 +554,14 @@
 
     .mtitle {
       font-size: clamp(34px, 5vw, 58px);
-      font-weight: 1000;
+      font-weight: 800;
       color: #7c3aed;
       margin: 8px 0
     }
 
     .mdesc {
       font-size: clamp(18px, 2.5vw, 27px);
-      font-weight: 950;
+      font-weight: 800;
       background: #f5f3ff;
       border-radius: 18px;
       padding: 15px;
@@ -571,7 +580,7 @@
       background: linear-gradient(135deg, #ff4fc3, #9b5de5);
       color: white;
       font-size: clamp(28px, 4vw, 52px);
-      font-weight: 1000
+      font-weight: 800
     }
 
     .rank {
@@ -589,7 +598,7 @@
       background: white;
       border-radius: 16px;
       padding: 13px 16px;
-      font-weight: 1000;
+      font-weight: 800;
       box-shadow: 0 6px 16px #0001
     }
 
@@ -645,13 +654,374 @@
         grid-template-columns: repeat(2, 1fr)
       }
     }
+
+    /* Font fix for Vietnamese readability */
+    body,
+    button,
+    input,
+    textarea {
+      font-family: "Be Vietnam Pro", "Segoe UI", Arial, Tahoma, sans-serif !important;
+    }
+
+    .question,
+    .ans,
+    .result,
+    .mdesc,
+    .pill,
+    .name,
+    .score,
+    .card {
+      font-family: "Be Vietnam Pro", "Segoe UI", Arial, Tahoma, sans-serif !important;
+    }
+
+    .ans {
+      font-weight: 700 !important;
+      line-height: 1.45 !important;
+      letter-spacing: -0.01em !important;
+    }
+
+    .question {
+      font-weight: 800 !important;
+      line-height: 1.45 !important;
+      letter-spacing: -0.015em !important;
+    }
+
+    .letter {
+      font-weight: 800 !important;
+    }
+
+    /* Tiles-only mode: hide point boxes, winner is based on car position only */
+    .score {
+      display: none !important;
+    }
+
+    .scoreboard {
+      grid-template-columns: repeat(4, minmax(130px, 1fr)) !important;
+    }
+
+    .team {
+      justify-content: center !important;
+    }
+
+    .name {
+      min-width: 145px !important;
+    }
+
+    .centerText {
+      min-width: 160px !important;
+    }
+
+    /* Horizontal classroom layout: left = race track, right = question board */
+    @media (min-width: 980px) {
+      body {
+        overflow-y: hidden;
+      }
+
+      header {
+        padding: 10px 18px 12px;
+      }
+
+      h1 {
+        font-size: clamp(22px, 2.5vw, 36px);
+      }
+
+      .sub {
+        font-size: 14px;
+        margin-top: 4px;
+      }
+
+      .scoreboard {
+        margin-top: 10px;
+        grid-template-columns: repeat(4, minmax(120px, 1fr)) !important;
+        gap: 10px;
+      }
+
+      .team {
+        padding: 9px;
+        border-radius: 17px;
+      }
+
+      .name {
+        min-width: 120px !important;
+        font-size: clamp(14px, 1.45vw, 20px);
+        padding: 5px 9px;
+      }
+
+      main {
+        max-width: 100vw;
+        height: calc(100vh - 142px);
+        margin: 12px auto 0;
+        padding: 0 14px 14px;
+      }
+
+      .game {
+        height: 100%;
+        display: grid;
+        grid-template-columns: minmax(650px, 1fr) minmax(360px, 430px);
+        grid-template-rows: auto 1fr auto;
+        grid-template-areas:
+          "info board"
+          "race board"
+          "track board";
+        gap: 14px;
+        padding: 14px;
+        overflow: hidden;
+      }
+
+      .info {
+        grid-area: info;
+        margin-bottom: 0;
+      }
+
+      .race {
+        grid-area: race;
+        min-height: 360px;
+        padding: 12px 12px 12px 56px;
+      }
+
+      .finish {
+        left: 0 !important;
+        width: 44px !important;
+        border-left: 0 !important;
+        border-right: 6px solid #ffd166 !important;
+        z-index: 4;
+      }
+
+      .lane {
+        height: clamp(58px, 8.2vh, 76px);
+        margin: 7px 0;
+      }
+
+      .car {
+        top: 17px;
+        font-size: clamp(34px, 4vw, 46px);
+      }
+
+      .trackInfo {
+        grid-area: track;
+        margin-top: 0;
+      }
+
+      .boardWrap {
+        grid-area: board;
+        margin-top: 0;
+        height: 100%;
+        overflow: auto;
+        padding: 14px;
+        border-radius: 24px;
+      }
+
+      .boardTitle {
+        margin-bottom: 12px;
+      }
+
+      .boardTitle h2 {
+        font-size: clamp(20px, 2vw, 28px);
+      }
+
+      .board {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+      }
+
+      .card {
+        min-height: clamp(66px, 8vh, 86px);
+        font-size: clamp(28px, 3vw, 44px);
+        border-radius: 18px;
+      }
+
+      .controls {
+        margin-top: 12px;
+      }
+
+      .switch {
+        font-size: 13px;
+        padding: 8px 10px;
+      }
+
+      /* Question opens as a right-side panel so the race track remains visible */
+      #questionModal.modalbg {
+        left: auto;
+        right: 14px;
+        top: 14px;
+        bottom: 14px;
+        width: min(520px, 42vw);
+        height: auto;
+        padding: 0;
+        background: transparent;
+        backdrop-filter: none;
+        align-items: stretch;
+        justify-content: stretch;
+      }
+
+      #questionModal .modal {
+        width: 100%;
+        height: 100%;
+        max-height: none;
+        padding: 18px;
+        border: 4px solid #fff;
+        text-align: left;
+      }
+
+      #questionModal .question {
+        font-size: clamp(20px, 2vw, 28px);
+        margin-bottom: 12px;
+      }
+
+      #questionModal .answers {
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+
+      #questionModal .ans {
+        min-height: 62px;
+        padding: 12px;
+        font-size: clamp(14px, 1.2vw, 18px);
+      }
+
+      #questionModal .result {
+        font-size: 15px;
+      }
+
+      #questionModal .controls {
+        position: sticky;
+        bottom: 0;
+        background: white;
+        padding-top: 10px;
+      }
+    }
+
+    /* Keep normal stacked layout on tablet/mobile */
+    @media (max-width: 979px) {
+      body {
+        overflow-y: auto;
+      }
+
+      #questionModal.modalbg {
+        inset: 0;
+        width: auto;
+        height: auto;
+        background: #0f172a99;
+        backdrop-filter: blur(7px);
+        padding: 18px;
+      }
+    }
+
+
+    /* Final layout fix:
+   - Keep race track on the left and question number board on the right.
+   - Make race lanes fill the track area so there is no large empty dark space.
+   - Show the question modal in the center for easier reading. */
+    @media (min-width: 980px) {
+      .game {
+        grid-template-columns: minmax(720px, 1fr) minmax(320px, 360px) !important;
+        grid-template-rows: auto minmax(0, 1fr) auto !important;
+        align-items: stretch !important;
+      }
+
+      .race {
+        min-height: 0 !important;
+        height: 100% !important;
+        display: grid !important;
+        grid-template-rows: repeat(4, minmax(92px, 1fr)) !important;
+        gap: 10px !important;
+        align-content: stretch !important;
+        padding: 14px 14px 14px 60px !important;
+      }
+
+      .lane {
+        height: auto !important;
+        min-height: 92px !important;
+        margin: 0 !important;
+        border-radius: 22px !important;
+      }
+
+      .laneLabel {
+        top: 50% !important;
+        transform: translateY(-50%) !important;
+      }
+
+      .car {
+        top: 50% !important;
+        font-size: clamp(42px, 4.4vw, 58px) !important;
+        transform: translateY(-50%) !important;
+      }
+
+      @keyframes boost {
+        40% {
+          transform: translateY(-50%) scale(1.25) rotate(8deg);
+        }
+      }
+
+      .boardWrap {
+        min-height: 0 !important;
+      }
+
+      /* Center question modal instead of opening it as a side panel */
+      #questionModal.modalbg {
+        inset: 0 !important;
+        width: auto !important;
+        height: auto !important;
+        left: 0 !important;
+        right: 0 !important;
+        top: 0 !important;
+        bottom: 0 !important;
+        padding: 18px !important;
+        background: rgba(15, 23, 42, .62) !important;
+        backdrop-filter: blur(7px) !important;
+        align-items: center !important;
+        justify-content: center !important;
+      }
+
+      #questionModal .modal {
+        width: min(900px, 78vw) !important;
+        height: auto !important;
+        max-height: 90vh !important;
+        padding: 24px !important;
+        border: 5px solid #fff !important;
+        text-align: left !important;
+      }
+
+      #questionModal .question {
+        font-size: clamp(23px, 2.5vw, 34px) !important;
+        margin-bottom: 16px !important;
+      }
+
+      #questionModal .answers {
+        grid-template-columns: 1fr 1fr !important;
+        gap: 12px !important;
+      }
+
+      #questionModal .ans {
+        min-height: 76px !important;
+        padding: 14px !important;
+        font-size: clamp(15px, 1.35vw, 20px) !important;
+      }
+
+      #questionModal .controls {
+        position: static !important;
+        background: transparent !important;
+        padding-top: 0 !important;
+      }
+    }
+
+    @media (min-width: 1200px) {
+      .race {
+        grid-template-rows: repeat(4, minmax(105px, 1fr)) !important;
+      }
+
+      .lane {
+        min-height: 105px !important;
+      }
+    }
   </style>
 </head>
 
 <body>
   <header>
     <h1>🏎️ Đua Xe Chọn Số: Cạnh tranh & Độc quyền</h1>
-    <div class="sub">Đội tới lượt tự chọn ô số 1–20. Trả lời đúng mới được điểm, chạy xe và kích hoạt power-up ẩn.</div>
+    <div class="sub">Bố cục ngang: bên trái là trường đua, bên phải là bảng chọn câu hỏi. Chọn sai sẽ hiện đáp án đúng
+      rồi qua lượt.</div>
     <div class="scoreboard" id="scoreboard"></div>
   </header>
 
@@ -684,7 +1054,7 @@
         <div class="board" id="board"></div>
         <div class="controls">
           <div class="leftc">
-            <label class="switch"><input type="checkbox" id="power" checked> 12 power-up ẩn</label>
+            <label class="switch"><input type="checkbox" id="power" checked> 8 hiệu ứng ẩn</label>
             <label class="switch"><input type="checkbox" id="sound" checked> Âm thanh</label>
           </div>
           <div class="rightc">
@@ -708,7 +1078,7 @@
         <div></div>
         <div class="rightc">
           <button class="btn gray" id="show">👀 Hiện đáp án</button>
-          <button class="btn" id="next" disabled>Tiếp tục</button>
+          <button class="btn" id="next" disabled>Qua lượt</button>
         </div>
       </div>
     </div>
@@ -717,7 +1087,7 @@
   <div class="modalbg" id="powerModal">
     <div class="modal">
       <div class="icon" id="powerIcon">🎁</div>
-      <div class="mtitle" id="powerName">Power-up</div>
+      <div class="mtitle" id="powerName">Hiệu ứng</div>
       <div class="mdesc" id="powerDesc"></div><br><button class="btn" id="powerOk">OK</button>
     </div>
   </div>
@@ -735,37 +1105,31 @@
   <script>
     const QUESTIONS = [{ "q": "Độc quyền là gì?", "a": "B", "o": ["Sự cạnh tranh hoàn toàn tự do giữa các doanh nghiệp nhỏ", "Sự liên minh giữa các doanh nghiệp lớn có khả năng thâu tóm sản xuất và tiêu thụ hàng hóa", "Sự can thiệp trực tiếp của người tiêu dùng vào thị trường", "Sự phân chia đều lợi nhuận giữa các doanh nghiệp"] }, { "q": "Mục đích chủ yếu của độc quyền là gì?", "a": "C", "o": ["Giảm giá hàng hóa xuống thấp nhất", "Xóa bỏ hoàn toàn sản xuất hàng hóa", "Định ra giá cả độc quyền nhằm thu lợi nhuận độc quyền cao", "Làm cho mọi doanh nghiệp có quy mô bằng nhau"] }, { "q": "Một nguyên nhân hình thành độc quyền là gì?", "a": "A", "o": ["Sự phát triển của lực lượng sản xuất", "Sự biến mất của khoa học - kỹ thuật", "Sự giảm quy mô của các xí nghiệp lớn", "Sự xóa bỏ hoàn toàn thị trường"] }, { "q": "Khi khoa học - kỹ thuật phát triển, điều gì có thể xảy ra?", "a": "A", "o": ["Các xí nghiệp lớn có điều kiện hình thành", "Sản xuất chỉ còn ở quy mô nhỏ", "Cạnh tranh hoàn toàn biến mất ngay lập tức", "Người tiêu dùng trực tiếp quản lý doanh nghiệp"] }, { "q": "Vì sao cạnh tranh có thể dẫn đến độc quyền?", "a": "B", "o": ["Vì cạnh tranh làm mọi doanh nghiệp mạnh như nhau", "Vì doanh nghiệp nhỏ có thể hợp lại hoặc bị loại bỏ", "Vì cạnh tranh làm giá cả luôn cố định", "Vì cạnh tranh không ảnh hưởng đến quy mô doanh nghiệp"] }, { "q": "Khủng hoảng kinh tế góp phần hình thành độc quyền như thế nào?", "a": "B", "o": ["Làm cho các doanh nghiệp nhỏ luôn phát triển mạnh hơn", "Thúc đẩy quá trình tập trung sản xuất", "Làm mất hoàn toàn nhu cầu tiêu dùng", "Ngăn chặn mọi hình thức liên minh doanh nghiệp"] }, { "q": "Độc quyền nhà nước là gì?", "a": "B", "o": ["Nhà nước không tham gia bất kỳ hoạt động kinh tế nào", "Nhà nước nắm giữ vị thế độc quyền dựa trên sức mạnh của các tổ chức độc quyền trong lĩnh vực then chốt", "Người tiêu dùng quyết định toàn bộ giá cả thị trường", "Doanh nghiệp nhỏ kiểm soát toàn bộ nền kinh tế"] }, { "q": "Nguyên nhân thứ nhất hình thành độc quyền nhà nước là gì?", "a": "A", "o": ["Tích tụ và tập trung tư bản ngày càng lớn", "Doanh nghiệp nhỏ ngày càng tách rời nhau", "Sản xuất ngày càng phân tán", "Nhà nước ngừng điều tiết xã hội"] }, { "q": "Khi phân công lao động xã hội phát triển, các ngành mới thường có đặc điểm gì?", "a": "C", "o": ["Không cần vốn đầu tư", "Thu hồi vốn rất nhanh và lợi nhuận rất cao ngay lập tức", "Đầu tư lớn, thu hồi vốn chậm, ít lợi nhuận", "Không cần sự hỗ trợ từ nhà nước"] }, { "q": "Một nguyên nhân hình thành độc quyền nhà nước là để làm gì trước mâu thuẫn xã hội?", "a": "B", "o": ["Xóa bỏ hoàn toàn giai cấp", "Xoa dịu mâu thuẫn giữa tư sản, vô sản và nhân dân lao động", "Làm cho mâu thuẫn xã hội gay gắt hơn", "Loại bỏ toàn bộ hoạt động kinh tế đối ngoại"] }, { "q": "Trong quan hệ kinh tế đối ngoại, nhà nước tư bản can thiệp nhằm mục đích gì?", "a": "A", "o": ["Bảo hộ tư bản và tạo môi trường quốc tế thuận lợi", "Cấm mọi hình thức đầu tư ra nước ngoài", "Xóa bỏ toàn bộ thương mại quốc tế", "Làm suy yếu các tổ chức độc quyền trong nước"] }, { "q": "Bản chất của chủ nghĩa tư bản độc quyền nhà nước là gì?", "a": "B", "o": ["Sự tách rời hoàn toàn giữa nhà nước và tổ chức độc quyền tư nhân", "Sự kết hợp giữa tổ chức độc quyền tư nhân và nhà nước tư bản", "Sự biến mất của chủ nghĩa tư bản", "Sự kiểm soát nền kinh tế bởi người lao động"] }, { "q": "Độc quyền có tác động tích cực nào?", "a": "A", "o": ["Tạo khả năng nghiên cứu và phát triển khoa học - kỹ thuật", "Luôn làm giảm năng suất lao động", "Luôn làm mất hoàn toàn cạnh tranh", "Làm cho nền kinh tế ngừng phát triển"] }, { "q": "Đâu là tác động tiêu cực của độc quyền?", "a": "C", "o": ["Góp phần tăng năng suất lao động", "Tạo điều kiện nghiên cứu khoa học - kỹ thuật", "Gây thiệt hại cho người tiêu dùng và xã hội", "Nâng cao năng lực cạnh tranh trong mọi trường hợp"] }, { "q": "Trong trạng thái độc quyền, cạnh tranh có còn tồn tại không?", "a": "B", "o": ["Không, độc quyền xóa bỏ hoàn toàn cạnh tranh", "Có, vẫn tồn tại cạnh tranh giữa tổ chức độc quyền với xí nghiệp ngoài độc quyền, giữa các tổ chức độc quyền và trong nội bộ tổ chức độc quyền", "Không, vì mọi doanh nghiệp đều thuộc một chủ sở hữu", "Chỉ còn cạnh tranh giữa người tiêu dùng với nhau"] }, { "q": "Các hình thức tổ chức độc quyền gồm những hình thức nào?", "a": "A", "o": ["Cartel, syndicate, trust, consortium, conglomerate", "Công ty nhỏ, hộ gia đình, hợp tác xã, cá nhân", "Chợ truyền thống, siêu thị, cửa hàng tiện lợi", "Thuế, ngân sách, tín dụng, tiền tệ"] }, { "q": "Cartel là gì?", "a": "A", "o": ["Liên minh độc quyền về giá cả, phân chia thị trường, số lượng hàng hóa sản xuất", "Hình thức độc quyền thống nhất cả sản xuất và lưu thông", "Tổ chức độc quyền do một ngân hàng đứng đầu toàn bộ nền kinh tế", "Doanh nghiệp nhà nước trong lĩnh vực hạ tầng"] }, { "q": "Syndicate có đặc điểm gì?", "a": "B", "o": ["Doanh nghiệp mất độc lập cả sản xuất và lưu thông", "Mọi việc mua bán do một ban quản trị đảm nhiệm, các doanh nghiệp vẫn độc lập về sản xuất nhưng mất độc lập về lưu thông", "Chỉ là liên minh tạm thời giữa người tiêu dùng", "Không liên quan đến việc mua bán hàng hóa"] }, { "q": "Trust là gì?", "a": "A", "o": ["Hình thức độc quyền thống nhất cả sản xuất và lưu thông dưới sự quản lý của hội đồng quản trị", "Hình thức độc quyền chỉ liên minh về giá cả", "Hình thức độc quyền chỉ tồn tại trong nông nghiệp", "Hình thức sở hữu nhà nước trong ngành hạ tầng"] }, { "q": "Theo V.I. Lênin, tư bản tài chính là gì?", "a": "B", "o": ["Sự tách rời giữa tư bản ngân hàng và tư bản công nghiệp", "Kết quả của sự hợp nhất giữa tư bản ngân hàng của một số ít ngân hàng độc quyền lớn nhất với tư bản của các liên minh độc quyền công nghiệp", "Toàn bộ tiền tiết kiệm của người tiêu dùng", "Vốn đầu tư nhỏ của các hộ gia đình"] }];
 
-    // Có cả power tốt và power xấu để cân bằng game.
+    // 8 hiệu ứng ẩn, chủ yếu là cộng ô; chỉ giữ phạt nhẹ để cân bằng.
     const PUPS = [
-      { n: "Nitro", i: "🚀", e: "move3", d: "Xe tiến thêm 3 ô!" },
+      { n: "Mini Boost", i: "➕", e: "move1", d: "Xe tiến thêm 1 ô!" },
       { n: "Turbo", i: "⚡", e: "move2", d: "Xe tiến thêm 2 ô!" },
-      { n: "Gold", i: "🥇", e: "p30", d: "Cộng thêm 30 điểm." },
-      { n: "Gift", i: "🎁", e: "p15", d: "Cộng thêm 15 điểm." },
-      { n: "Tax", i: "💸", e: "minus20", d: "Bị trừ 20 điểm." },
-      { n: "Baam", i: "💜", e: "minus15", d: "Bị trừ 15 điểm." },
-      { n: "Flat Tire", i: "🛞", e: "back2", d: "Xe bị lùi 2 ô." },
-      { n: "Red Light", i: "🚦", e: "stop", d: "Xe đứng yên thêm 1 lượt, câu đúng chỉ được điểm." },
-      { n: "Banana", i: "🍌", e: "banana", d: "Đội đang dẫn đầu bị lùi 2 ô." },
-      { n: "Magnet", i: "🧲", e: "magnet", d: "Hút 10 điểm từ đội đang dẫn đầu." },
-      { n: "Swap", i: "🔄", e: "swap", d: "Đổi vị trí xe với đội đang dẫn đầu." },
-      { n: "Boom", i: "💥", e: "boom", d: "Tất cả đội khác bị trừ 10 điểm." },
+      { n: "Nitro", i: "🚀", e: "move3", d: "Xe tiến thêm 3 ô!" },
+      { n: "Super Boost", i: "🏁", e: "move4", d: "Xe tiến thêm 4 ô!" },
       { n: "Comeback", i: "🔥", e: "come", d: "Nếu đang cuối bảng, xe tiến thêm 4 ô." },
-      { n: "Shield", i: "🛡️", e: "shield", d: "Chặn 1 lần bị lùi xe." }
+      { n: "Teleport", i: "🌀", e: "tele", d: "Dịch chuyển lên bằng đội đang dẫn đầu." },
+      { n: "Shield", i: "🛡️", e: "shield", d: "Chặn 1 lần bị lùi xe." },
+      { n: "Banana", i: "🍌", e: "banana", d: "Đội đang dẫn đầu bị lùi 1 ô." }
     ];
 
-    const $ = id => document.getElementById(id), MAX = 20, KEY = "raceChooseQuizChuong4V1";
+    const $ = id => document.getElementById(id), MAX = 20, KEY = "raceChooseQuizChuong4WrongRevealV1";
     let s = {
       teams: [
-        { name: "Team 1", score: 0, pos: 0, car: "🏎️", shield: false, stop: false },
-        { name: "Team 2", score: 0, pos: 0, car: "🚙", shield: false, stop: false },
-        { name: "Team 3", score: 0, pos: 0, car: "🚗", shield: false, stop: false },
-        { name: "Team 4", score: 0, pos: 0, car: "🚕", shield: false, stop: false }
+        { name: "Team 1", pos: 0, car: "🏎️", shield: false, stop: false },
+        { name: "Team 2", pos: 0, car: "🚙", shield: false, stop: false },
+        { name: "Team 3", pos: 0, car: "🚗", shield: false, stop: false },
+        { name: "Team 4", pos: 0, car: "🚕", shield: false, stop: false }
       ], active: 0, used: Array(QUESTIONS.length).fill(false), selected: null, answered: false, pups: []
     };
 
     function buildPups() {
       let a = Array(QUESTIONS.length).fill(null);
-      [...Array(QUESTIONS.length).keys()].sort(() => Math.random() - .5).slice(0, 12).forEach(i => a[i] = PUPS[Math.floor(Math.random() * PUPS.length)]);
+      [...Array(QUESTIONS.length).keys()].sort(() => Math.random() - .5).slice(0, 8).forEach(i => a[i] = PUPS[Math.floor(Math.random() * PUPS.length)]);
       return a;
     }
     function save() { localStorage.setItem(KEY, JSON.stringify(s)) }
@@ -773,15 +1137,18 @@
     function render() { renderScores(); renderRace(); renderBoard(); save() }
     function remaining() { return s.used.filter(x => !x).length }
     function renderScores() {
-      $("scoreboard").innerHTML = s.teams.map((t, i) => `<div class="team ${i === s.active ? 'active' : ''}"><div class="name" contenteditable="true" data-name="${i}">${t.name}</div><div class="score" id="score${i}">${t.score}</div></div>`).join("");
-      document.querySelectorAll("[data-name]").forEach(el => el.onblur = () => { s.teams[+el.dataset.name].name = el.textContent.trim() || `Team ${+el.dataset.name + 1}`; render() });
+      $("scoreboard").innerHTML = s.teams.map((t, i) => `<div class="team ${i === s.active ? 'active' : ''}"><div class="name" contenteditable="true" data-name="${i}">${t.name}</div></div>`).join("");
+      document.querySelectorAll("[data-name]").forEach(el => el.onblur = () => {
+        s.teams[+el.dataset.name].name = el.textContent.trim() || `Team ${+el.dataset.name + 1}`;
+        render();
+      });
       $("turn").textContent = "🎯 Lượt chọn số: " + s.teams[s.active].name;
       $("count").textContent = `Còn ${remaining()} câu`;
       $("selectedHint").textContent = `${s.teams[s.active].name} chọn 1 ô bất kỳ`;
     }
     function renderRace() {
       $("race").innerHTML = '<div class="finish"></div>' + s.teams.map((t, i) => `<div class="lane"><div class="laneLabel">${t.name} ${t.shield ? '🛡️' : ''} ${t.stop ? '🚦' : ''}</div><div class="car" id="car${i}">${t.car}</div></div>`).join("");
-      s.teams.forEach((t, i) => { let x = 2 + (Math.min(t.pos, MAX) / MAX) * 86; $("car" + i).style.left = x + "%" });
+      s.teams.forEach((t, i) => { let x = 88 - (Math.min(t.pos, MAX) / MAX) * 78; $("car" + i).style.left = x + "%" });
       let leader = Math.max(...s.teams.map(t => t.pos));
       $("leaderProgress").style.width = (leader / MAX * 100) + "%";
       $("questionProgress").style.width = ((QUESTIONS.length - remaining()) / QUESTIONS.length * 100) + "%";
@@ -820,36 +1187,48 @@
     }
     function check(btn, L) {
       if (s.answered) return;
-      s.answered = true;
+
       let q = QUESTIONS[s.selected];
-      document.querySelectorAll(".ans").forEach(b => { b.disabled = true; if (b.querySelector(".letter").textContent === q.a) b.classList.add("correct") });
+      s.answered = true;
+
+      document.querySelectorAll(".ans").forEach(b => {
+        b.disabled = true;
+        if (b.querySelector(".letter").textContent === q.a) {
+          b.classList.add("correct");
+        }
+      });
+
       if (L === q.a) {
         btn.classList.add("correct");
-        addScore(s.active, 10);
 
         if (s.teams[s.active].stop) {
           s.teams[s.active].stop = false;
-          $("result").textContent = `✅ Đúng! ${s.teams[s.active].name} +10 điểm, nhưng bị Red Light nên xe chưa tiến.`;
+          $("result").textContent = `✅ Đúng! ${s.teams[s.active].name} trả lời đúng, nhưng bị Red Light nên xe chưa tiến.`;
         } else {
           move(s.active, 2);
           animateCar(s.active);
-          $("result").textContent = `✅ Đúng! ${s.teams[s.active].name} +10 điểm và xe tiến 2 ô.`;
+          $("result").textContent = `✅ Đúng! ${s.teams[s.active].name} xe tiến 2 ô.`;
         }
 
         $("result").classList.add("show");
-        confetti(50); sound("win");
+        confetti(50);
+        sound("win");
         setTimeout(reveal, 650);
       } else {
         btn.classList.add("wrong");
-        addScore(s.active, -5);
-        $("result").textContent = `❌ Sai. Đáp án đúng là ${q.a}. Đội bị trừ 5 điểm.`;
+        $("result").textContent = `❌ Sai. Đáp án đúng là ${q.a}. Không được tiến xe, bấm Qua lượt.`;
         $("result").classList.add("show");
         sound("lose");
       }
+
       s.used[s.selected] = true;
       $("next").disabled = false;
       $("show").disabled = true;
-      renderScores(); renderRace(); renderBoard();
+
+      renderScores();
+      renderRace();
+      renderBoard();
+
       if (s.teams.some(t => t.pos >= MAX)) setTimeout(winner, 900);
       save();
     }
@@ -861,9 +1240,7 @@
       save();
     }
     function addScore(i, d) {
-      s.teams[i].score = Math.max(0, s.teams[i].score + d);
-      let el = $("score" + i);
-      if (el) { el.textContent = s.teams[i].score; el.classList.add("bump"); setTimeout(() => el.classList.remove("bump"), 520) }
+      // Tiles-only mode: no point system.
     }
     function move(i, n) { s.teams[i].pos = Math.max(0, Math.min(MAX, s.teams[i].pos + n)); renderRace() }
     function losePos(i, n) { if (s.teams[i].shield) { s.teams[i].shield = false; return } move(i, -n) }
@@ -872,27 +1249,63 @@
     function lastIndex() { let m = Math.min(...s.teams.map(t => t.pos)); return s.teams.findIndex(t => t.pos === m) }
     function apply(p) {
       let i = s.active, lead = leaderIndex(), desc = p.d;
-      if (p.e === "move3") { move(i, 3); animateCar(i) }
-      if (p.e === "move2") { move(i, 2); animateCar(i) }
-      if (p.e === "p30") addScore(i, 30);
-      if (p.e === "p15") addScore(i, 15);
-      if (p.e === "minus20") addScore(i, -20);
-      if (p.e === "minus15") addScore(i, -15);
-      if (p.e === "back2") losePos(i, 2);
-      if (p.e === "stop") s.teams[i].stop = true;
-      if (p.e === "banana" && lead !== i) losePos(lead, 2);
-      if (p.e === "magnet") { let amount = Math.min(10, s.teams[lead].score); if (lead !== i) { addScore(lead, -amount); addScore(i, amount); desc = `Hút ${amount} điểm từ ${s.teams[lead].name}.` } }
-      if (p.e === "swap" && lead !== i) { let tmp = s.teams[i].pos; s.teams[i].pos = s.teams[lead].pos; s.teams[lead].pos = tmp; desc = `Đổi vị trí xe với ${s.teams[lead].name}.` }
-      if (p.e === "boom") s.teams.forEach((t, idx) => { if (idx !== i) addScore(idx, -10) });
-      if (p.e === "come") { let last = lastIndex(); if (last === i) { move(i, 4); desc = "Đang cuối bảng nên xe tiến thêm 4 ô!" } else { move(i, 1); desc = "Không cuối bảng nên chỉ tiến thêm 1 ô." } }
-      if (p.e === "shield") s.teams[i].shield = true;
+
+      if (p.e === "move1") { move(i, 1); animateCar(i); }
+      if (p.e === "move2") { move(i, 2); animateCar(i); }
+      if (p.e === "move3") { move(i, 3); animateCar(i); }
+      if (p.e === "move4") { move(i, 4); animateCar(i); }
+
+      if (p.e === "come") {
+        let last = lastIndex();
+        if (last === i) {
+          move(i, 4);
+          animateCar(i);
+          desc = "Đang cuối bảng nên xe tiến thêm 4 ô!";
+        } else {
+          move(i, 1);
+          animateCar(i);
+          desc = "Không cuối bảng nên chỉ tiến thêm 1 ô.";
+        }
+      }
+
+      if (p.e === "tele") {
+        let maxPos = Math.max(...s.teams.map(t => t.pos));
+        if (s.teams[i].pos < maxPos) {
+          s.teams[i].pos = maxPos;
+          animateCar(i);
+          desc = `${s.teams[i].name} dịch chuyển lên bằng đội đang dẫn đầu.`;
+        } else {
+          move(i, 1);
+          animateCar(i);
+          desc = "Đang dẫn đầu nên được tiến thêm 1 ô.";
+        }
+      }
+
+      if (p.e === "shield") {
+        s.teams[i].shield = true;
+      }
+
+      if (p.e === "banana") {
+        if (lead !== i) {
+          losePos(lead, 1);
+          desc = `${s.teams[lead].name} đang dẫn đầu nên bị lùi 1 ô.`;
+        } else {
+          move(i, 1);
+          animateCar(i);
+          desc = "Bạn đang dẫn đầu nên Banana đổi thành tiến thêm 1 ô.";
+        }
+      }
 
       $("powerIcon").textContent = p.i;
       $("powerName").textContent = p.n;
       $("powerDesc").textContent = desc;
       $("powerModal").classList.add("show");
-      confetti(35); sound("power");
-      renderScores(); renderRace(); renderBoard();
+      confetti(35);
+      sound("power");
+      renderScores();
+      renderRace();
+      renderBoard();
+
       if (s.teams.some(t => t.pos >= MAX)) setTimeout(winner, 900);
     }
     function nextTurn() {
@@ -904,27 +1317,46 @@
     }
     function showAns() {
       if (s.answered) return;
+
       let q = QUESTIONS[s.selected];
-      document.querySelectorAll(".ans").forEach(b => { if (b.querySelector(".letter").textContent === q.a) b.classList.add("correct") });
-      $("result").textContent = "Đáp án đúng là " + q.a;
+      s.answered = true;
+
+      document.querySelectorAll(".ans").forEach(b => {
+        b.disabled = true;
+        if (b.querySelector(".letter").textContent === q.a) {
+          b.classList.add("correct");
+        }
+      });
+
+      $("result").textContent = `👀 Đáp án đúng là ${q.a}. Không đội nào được tiến xe, bấm Qua lượt.`;
       $("result").classList.add("show");
+
+      s.used[s.selected] = true;
+      $("next").disabled = false;
+      $("show").disabled = true;
+
+      renderScores();
+      renderRace();
+      renderBoard();
+      save();
     }
     function winner() {
-      let sorted = [...s.teams].sort((a, b) => b.pos - a.pos || b.score - a.score);
+      let sorted = [...s.teams].sort((a, b) => b.pos - a.pos);
       $("winnerName").textContent = sorted[0].name;
-      $("winnerReason").textContent = `Dẫn đầu: ${sorted[0].pos}/${MAX} ô, ${sorted[0].score} điểm.`;
-      $("ranking").innerHTML = sorted.map((t, i) => `<div class="row"><span>${i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : '⭐'} ${t.name}</span><span>${t.pos} ô • ${t.score} điểm</span></div>`).join("");
+      $("winnerReason").textContent = `Dẫn đầu: ${sorted[0].pos}/${MAX} ô.`;
+      $("ranking").innerHTML = sorted.map((t, i) => `<div class="row"><span>${i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : '⭐'} ${t.name}</span><span>${t.pos} ô</span></div>`).join("");
       $("winnerModal").classList.add("show");
-      confetti(120); sound("win");
+      confetti(120);
+      sound("win");
     }
     function reset() {
       if (!confirm("Reset cuộc đua?")) return;
       s = {
         teams: [
-          { name: "Team 1", score: 0, pos: 0, car: "🏎️", shield: false, stop: false },
-          { name: "Team 2", score: 0, pos: 0, car: "🚙", shield: false, stop: false },
-          { name: "Team 3", score: 0, pos: 0, car: "🚗", shield: false, stop: false },
-          { name: "Team 4", score: 0, pos: 0, car: "🚕", shield: false, stop: false }
+          { name: "Team 1", pos: 0, car: "🏎️", shield: false, stop: false },
+          { name: "Team 2", pos: 0, car: "🚙", shield: false, stop: false },
+          { name: "Team 3", pos: 0, car: "🚗", shield: false, stop: false },
+          { name: "Team 4", pos: 0, car: "🚕", shield: false, stop: false }
         ], active: 0, used: Array(QUESTIONS.length).fill(false), selected: null, answered: false, pups: buildPups()
       };
       localStorage.removeItem(KEY);
